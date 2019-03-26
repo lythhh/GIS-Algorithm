@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript"></script>
+    <meta charset="utf-8">
+    <title>跳马问题</title>
+    <style type="text/css">
+        #result {
+            table-layout: fixed;
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <table border="1" WIDTH=600px HEIGHT=100px align="center" name="initTable">
+        <tr>
+            <td>
+                棋盘行数m
+            </td>
+            <td>
+                棋盘列数n
+            </td>
+            <td>
+                初始位置x(行号从0开始)
+            </td>
+            <td>
+                初始位置y(列号从0开始)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="number" min="1" max="100" id="chessboardM" value="5">
+            </td>
+            <td>
+                <input type="number" min="1" max="100" id="chessboardN" value="5">
+            </td>
+            <td>
+                <input type="number" min="1" max="100" id="originX" value="0">
+            </td>
+            <td>
+                <input type="number" min="1" max="100" id="originY" value="0">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="button" id="cal" onclick="getResult()" value="确定">
+            </td>
+        </tr>
+    </table>
+   <table border="1" WIDTH=600px HEIGHT=100px align="center">
+        <tr>
+            <td>
+                结果为：<br>
+                <p id="result" width=400px>
+                </p>
+            </td>
+        </tr>
+    </table>
+    <script type="text/javascript">
+        //得到棋盘大小 以及初始的棋子位置
+        //一共有8个方向，trace是对一条路径进行存储，stepNum是一条路径的步数，allRoad是对所有的路线进行存储，count是路线的条数，m,n分别是棋盘的大小，initX,initY是棋子最初的位置，cb是棋盘上每个位置
+        var dxy = new Array;
+        var trace = new Array;
+        dxy = [
+            [1, 2],
+            [2, 1],
+            [2, -1],
+            [1, -2],
+            [-1, -2],
+            [-2, -1],
+            [-2, 1],
+            [-1, 2]
+        ];
+        var stepNum = 1;
+        var allRoad = new Array;
+        var count = 0;
+        var initX;
+        var initY;
+        var m;
+        var n;
+        var cb = new Array();
+
+        //初始化变量，并输出结果
+        function getResult() {
+            allRoad.splice(0, allRoad.length);
+            count = 0;
+             //parseInt将字符串型变量转换成整型int
+            m = parseInt(document.getElementById("chessboardM").value);
+            n = parseInt(document.getElementById("chessboardN").value);
+            initX = parseInt(document.getElementById("originX").value);
+            initY = parseInt(document.getElementById("originY").value);
+            var finalRoad = new Array;
+          //对所有棋盘上位置赋值，初始值为0，i，j表示棋盘上的位置
+            for (var i = 0; i < m; i++) {
+                cb[i] = new Array();
+                for (var j = 0; j < n; j++) {
+                    cb[i][j] = 0;
+                }
+            }
+            finalRoad = findRoad();
+            document.getElementById("result").innerHTML = "一共有 " + count + "条" + "<br>";
+            //document.write("一共有 "+count+"条路线"+"<br>")
+            //i表示第i条路线，j表示某条路的第j步
+            for (var i = 0; i < count; i++) {
+                for (var j = 1; j < finalRoad[i].length; j++) {
+                    if (j == finalRoad[i].length - 1) {
+                        //document.write(finalRoad[i][j]+"<br>");
+                        document.getElementById("result").innerHTML += finalRoad[i][j] + "<br>";
+                    } 
+                    else {
+                        document.getElementById("result").innerHTML += finalRoad[i][j] + ">>";
+                        //document.write(finalRoad[i][j]+">>")
+                    }
+                }
+            }
+        }
+
+        //判断下一步能否走，   只有在JS代码里面可以注释且不显示
+        function trueDiret(x, y, i) {
+            //未超过边界
+            if ((x + dxy[i][0]) < m && (x + dxy[i][0]) >= 0 && y + dxy[i][1] < n && y + dxy[i][1] >= 0) {
+           //下一步未走过或者抵达起点
+                var tempx = 0;
+                var tempy = 0;
+                tempx = x + dxy[i][0];
+                tempy = y + dxy[i][1];
+           //未过界的前提下，不是原路，或者回到原点，则return true
+                if (cb[tempx][tempy] == 0 || (x + dxy[i][0] == initX && y + dxy[i][1] == initY)) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        //判断是否到达边界，true为到达边界
+        function receiveEdge() {
+            for (var i = 0; i < m; i++) {
+                if (cb[i][0] != 0 || cb[i][n - 1] != 0) {
+                    return true;
+                }
+            }
+            for (var i = 0; i < n; i++) {
+                if (cb[0][i] != 0 || cb[m - 1][i] != 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+       
+        //递归遍历  区分：迭代是将输出做为输入,再次进行处理；递归是自己调用自己，自己包含自己；回溯算法的基本思想是：从一条路往前走，能进则进，不能进则退回来，换一条路再试。
+        //trace是对一条路径进行存储，stepNum是一条路径的步数，count是路线的条数，t表示步数
+        function Iteration(x, y, t) {
+            if (x == initX && y == initY && t != 1) {
+                //判断是否到达过边界
+                if (receiveEdge()) {
+                    var tempTrace = new Array();
+                    count++;
+                    for (var i = 1; i < stepNum; i++) {
+                        var tempx = trace[i][0];
+                        var tempy = trace[i][1];
+                        tempTrace[i] = new Array();
+                        tempTrace[i][0] = tempx;
+                        tempTrace[i][1] = tempy;
+                    }
+                    //加上最后一个点
+                    tempTrace[stepNum] = new Array();
+                    tempTrace[stepNum][0] = initX;
+                    tempTrace[stepNum][1] = initY;
+                    allRoad.push(tempTrace);
+                }
+            } else {
+                for (var i = 0; i < 8; i++) {
+                    if (trueDiret(x, y, i)) {
+                        trace[stepNum] = new Array();
+                        trace[stepNum][0] = x;
+                        trace[stepNum][1] = y;
+                        cb[x][y] = stepNum;
+                        stepNum++;
+                        Iteration(x + dxy[i][0], y + dxy[i][1], stepNum);
+                        stepNum--;
+                        //cb[x]=new Array();
+                        cb[x][y] = 0;
+                        trace[stepNum][0] = 0;
+                        trace[stepNum][1] = 0;
+                    }
+                }
+            }
+        }
+
+     //找路线 并返回。
+        function findRoad() {
+            Iteration(initX, initY, stepNum);
+            return allRoad;
+        }
+    </script>
+</body>
+
+</html>

@@ -7,340 +7,374 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-
-namespace Area
+namespace Compress
 {
     public partial class Form1 : Form
     {
+        List<PointF[]> PointsXY = new List<PointF[]>();//存放兰伯特投影转换坐标数据
+        List<PointF[]> PointsBL = new List<PointF[]>();//存放原始的经纬度数据
+        List<PointF[]> Points = new List<PointF[]>();//存放四至转换后的数据
+        List<PointF[]> compressedPoints = new List<PointF[]>();//存放压缩后的数据
+        List<int> ID = new List<int>();
+
+        //四至
+        Boundary boundaryXY = new Boundary();
+        Boundary boundaryBL = new Boundary();
+        Boundary boundaryCompression = new Boundary();
+
+        string flag = "BL";
+        double threshold;//阈值
         public Form1()
         {
             InitializeComponent();
         }
-        public string fileName;
 
-        //WGS84坐标系参数
-        public static int a = 6378137;//长轴
-        public static double b = 6356752.3142;//短轴
-        public static double PI = 3.14159265;//圆周率
-
-        //屏幕参数
-        public static int width = 90;//panel的宽
-        public static int height = 524;//panel的高
-        Bitmap bitmap = new Bitmap(width, height);
-        //江苏省的四至
-        double maxJSX = 13574614.8546856;
-        double maxJSX_Y = 3704087.05481275;
-        double minJSX = 12952537.4951228;
-        double minJSX_Y = 4101836.00894706;
-        double maxJSY = 4156216.54314818;
-        double maxJSY_X = 13273585.8008774;
-        double minJSY = 3579743.801743;
-        double minJSY_X = 13413840.1216346;
-        static double eps = 0.0000000000000000001;
-
-        List<Point_new[]> pointsArrayList = new List<Point_new[]>();//存放点数据
-
-        public static List<double> area = new List<double>();//存放面积的数组
-
-        struct Point_new
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            public double x;
-            public double y;
-
-            public Point_new(double x, double y)
-            {
-                this.x = x;
-                this.y = y;
-            }
+            Close();
         }
 
-        private void 打开文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.InitialDirectory = "..\\";
-            openFileDialog1.FilterIndex = 2;
-            openFileDialog1.RestoreDirectory = true;
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                fileName = openFileDialog1.FileName;
+                try
+                {
+                    PointsBL = readMapPoints(openFileDialog1.FileName, out ID);
+                    Map.Refresh();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
-        private void 退出ToolStripMenuItem_Click(object sender, EventArgs e)
+        //读GEN格式文件
+        public static List<PointF[]> readMapPoints(string fileName, out List<int> id)        //获取地图数据里的点
         {
-            this.Close();
-        }
+            List<PointF[]> mapPoints = new List<PointF[]>();
+            id = new List<int>();
 
-        //绘制江苏省地图
-        private void display_Click(object sender, EventArgs e)
-        {
-            int i = 0, j = 0;
-            bitmap = new Bitmap(width, height);
-            panel1.Refresh();
-            Graphics g = Graphics.FromImage(bitmap);
-
-            double scaleX, scaleY;
-
-            Pen my_pen = new Pen(Color.Blue, 1);
-
-            try
+            string[] lines = File.ReadAllLines(fileName);//File.ReadAllLines()函数将全部文本文档内容放入字符串数组lines中，每一行作为lines这个字符串数组的一个元素
+            List<PointF> points = new List<PointF>();
+            for (int i = 0; i < lines.Length; i++)
             {
-                using (StreamReader sr = new StreamReader(fileName))
+                if (i == 0)
                 {
-                    string str = sr.ReadLine();
-                    while (str != "END")
-                    {
-                        List<Point_new> line = new List<Point_new>();
-                        while ((str = sr.ReadLine()) != "END")
-                        {
-                            string[] split = str.Split(',');
-                            line.Add(new Point_new(Convert.ToDouble(split[0]), Convert.ToDouble(split[1])));
-
-                        }
-                        Point_new[] line_new = new Point_new[line.Count];
-                        for (i = 0; i < line.Count; ++i)
-                        {
-                            line_new[i] = line[i];
-                        }
-
-                        pointsArrayList.Add(line_new);
-                        str = sr.ReadLine();
-                    }
-
-                    scaleX = (maxJSX - minJSX) / width;
-                    scaleY = (maxJSY - minJSY) / height;
-
-                    if (scaleX > scaleY)
-                    {
-                        for (i = 0; i < pointsArrayList.Count; i++)
-                        {
-                            Point[] MapPoints = new Point[pointsArrayList[i].Length];
-                            for (j = 0; j < pointsArrayList[i].Length; j++)
-                            {
-                                MapPoints[j].X = (int)((pointsArrayList[i][j].x - minJSX) / scaleX);
-                                MapPoints[j].Y = (int)((maxJSY - pointsArrayList[i][j].y) / scaleX);
-                            }
-                            g.DrawLines(my_pen, MapPoints);
-                        }
-                    }
+                    id.Add(int.Parse(lines[i].Trim()));
+                    continue;
+                }
+                if (String.Compare(lines[i].ToUpper(), "END") == 0)
+                {
+                    mapPoints.Add(points.ToArray());//将 List<PointF> points转为数组,并添加到mapPoints中
+                    points.Clear();
+                    if (lines[i + 1].ToUpper() == "END")//读到两个END，结束
+                        break;
                     else
                     {
-                        for (i = 0; i < pointsArrayList.Count; i++)
-                        {
-                            Point[] MapPoints = new Point[pointsArrayList[i].Length];
-                            for (j = 0; j < pointsArrayList[i].Length; j++)
-                            {
-                                MapPoints[j].X = (int)((pointsArrayList[i][j].x - minJSX) / scaleY);
-                                MapPoints[j].Y = (int)((maxJSY - pointsArrayList[i][j].y) / scaleY);
-                            }
-                            g.DrawLines(my_pen, MapPoints);
-                        }
+                        id.Add(int.Parse(lines[i + 1].Trim()));//int.Parse将字符串转化为int型；Trim()是String类的内置方法，用于去除字符串前后的空格
+                        i++;
                     }
-                    panel1.BackgroundImage = bitmap;
-                    panel1.Refresh();
-                }
-
-            }
-            catch (Exception ep11)
-            {
-                MessageBox.Show("The file cannot be read properly,because" + ep11.Message);
-            }
-        }
-
-        //求平面坐标系下的地市面积
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            richTextBox1.Clear();
-            area.Clear();
-            double temp = 0;
-            try
-            {
-                using (StreamReader sr = new StreamReader(fileName))
-                {
-                    string str = sr.ReadLine();
-                    while (str != "END")
-                    {
-                        List<Point_new> line = new List<Point_new>();
-                        while ((str = sr.ReadLine()) != "END")
-                        {
-                            string[] split = str.Split(',');
-                            line.Add(new Point_new(Convert.ToDouble(split[0]), Convert.ToDouble(split[1])));
-
-                        }
-                        Point_new[] line_new = new Point_new[line.Count];
-                        for (int i = 0; i < line.Count; ++i)
-                        {
-                            line_new[i] = line[i];
-                        }
-
-                        pointsArrayList.Add(line_new);
-                        str = sr.ReadLine();
-                    }
-                    for (int i = 0; i < pointsArrayList.Count; ++i)
-                    {
-                        if (i >= 1 && i <= 6)
-                        {
-                            for (int j = 1; j < pointsArrayList[i].Length; ++j)
-                            {
-                                if (j == pointsArrayList[i].Length - 1)
-                                    temp = temp + pointsArrayList[i][j].x * (pointsArrayList[i][1].y - pointsArrayList[i][j - 1].y) / 2;
-                                else
-                                    temp = temp + pointsArrayList[i][j].x * (pointsArrayList[i][j + 1].y - pointsArrayList[i][j - 1].y) / 2;
-                            }
-                            if (i == 6)
-                                area.Add(Math.Abs(temp));
-                        }
-                        else
-                        {
-                            for (int j = 1; j < pointsArrayList[i].Length; ++j)
-                            {
-                                if (j == pointsArrayList[i].Length - 1)
-                                    temp = temp + pointsArrayList[i][j].x * (pointsArrayList[i][1].y - pointsArrayList[i][j - 1].y) / 2;
-                                else
-                                    temp = temp + pointsArrayList[i][j].x * (pointsArrayList[i][j + 1].y - pointsArrayList[i][j - 1].y) / 2;
-                            }
-                            area.Add(Math.Abs(temp));
-                        }
-                        temp = 0;
-                    }
-                }
-            }
-            catch (Exception ep11)
-            {
-                MessageBox.Show("The file cannot be read properly,because" + ep11.Message);
-            }
-            for (int i = 0; i < 13; ++i)
-            {
-                richTextBox1.Text += "第" + (i + 1) + "块地市的面积为：" + Form1.area[i].ToString() + "m²" + Environment.NewLine;
-            }
-        }
-
-        //墨卡托投影反算程序，转换上述数据为经纬度坐标，并显示
-        private void display1_Click(object sender, EventArgs e)
-        {
-            bitmap = new Bitmap(width, height);
-            Graphics g1 = Graphics.FromImage(bitmap);
-            Pen my_pen = new Pen(Color.Blue, 1);
-
-            double B0 = 0;//标准纬线
-            double ep1_84 = Math.Sqrt((Math.Pow(a, 2) - Math.Pow(b, 2)) / Math.Pow(a, 2));
-            double ep2_84 = Math.Pow((Math.Pow(a, 2) - Math.Pow(b, 2)) / Math.Pow(b, 2), 2);
-            double K = Math.Pow(a, 2) / b / Math.Sqrt(1 + ep2_84 * Math.Pow(Math.Cos(B0), 2)) * Math.Cos(B0);
-
-            double LMax = reverse_Mercator(new Point_new(maxJSX, maxJSX_Y), K, ep1_84, 0).x;
-            double BMax = reverse_Mercator(new Point_new(maxJSY_X, maxJSY), K, ep1_84, 0).y;
-            double LMin = reverse_Mercator(new Point_new(minJSX, minJSX_Y), K, ep1_84, 0).x;
-            double BMin = reverse_Mercator(new Point_new(minJSY_X, minJSY), K, ep1_84, 0).y;
-
-            double scalex = (LMax - LMin) / width;
-            double scaley = (BMax - BMin) / height;
-
-            if (scalex > scaley)
-            {
-                for (int i = 0; i < pointsArrayList.Count; i++)
-                {
-                    Point[] screenPoints = new Point[pointsArrayList[i].Length];
-                    for (int j = 0; j < pointsArrayList[i].Length; j++)
-                    {
-                        pointsArrayList[i][j] = reverse_Mercator(pointsArrayList[i][j], K, ep1_84, 0);
-                        screenPoints[j].X = (int)((pointsArrayList[i][j].x - LMin) / scalex);
-                        screenPoints[j].Y = (int)((BMax - pointsArrayList[i][j].y) / scalex);
-                    }
-                    g1.DrawLines(my_pen, screenPoints);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < pointsArrayList.Count; i++)
-                {
-                    Point[] screenPoints = new Point[pointsArrayList[i].Length];
-                    for (int j = 0; j < pointsArrayList[i].Length; j++)
-                    {
-                        pointsArrayList[i][j] = reverse_Mercator(pointsArrayList[i][j], K, ep1_84, 0);
-                        screenPoints[j].X = (int)((pointsArrayList[i][j].x - LMin) / scaley);
-                        screenPoints[j].Y = (int)((BMax - pointsArrayList[i][j].y) / scaley);
-                    }
-                    g1.DrawLines(my_pen, screenPoints);
-                }
-            }
-            panel1.BackgroundImage = bitmap;
-        }
-
-        //墨卡托投影反算程序
-        Point_new reverse_Mercator(Point_new point, double K, double e, double B)
-        {
-            Point_new new_Point;
-            double B_old = 0;
-            double B_new = 0;
-            double L0 = 0;
-
-            while (true)
-            {
-                B_new = PI / 2 - 2 * Math.Atan(Math.Exp(-point.y / K) * Math.Exp(e / 2 *
-                    Math.Log((1 - e * Math.Sin(B_old)) / (1 + e * Math.Sin(B_old)))));
-                if (B_new - B_old < eps)
-                    break;
-                B_old = B_new;
-            }
-            new_Point.x = (point.x / K + L0) * 180 / PI;
-            new_Point.y = B_new * 180 / PI;
-
-            return new_Point;
-        }
-
-        private void displayJiangSuToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        //基于经纬度坐标计算江苏省十三个地市的面积
-        private void button2_Click_1(object sender, EventArgs e)
-        {
-            richTextBox1.Clear();//清除文本框控件中的文本
-            area.Clear();//移除area中的元素
-            double ep1_84 = Math.Sqrt((Math.Pow(a, 2) - Math.Pow(b, 2)) / Math.Pow(a, 2));
-            double K;
-            double A = 1 + 1.000000 / 2 * Math.Pow(ep1_84, 2) + 3.000000 / 8 * Math.Pow(ep1_84, 4) + 5.000000 / 16 * Math.Pow(ep1_84, 6);
-            double B = 1.000000 / 6 * Math.Pow(ep1_84, 2) + 3.000000 / 16 * Math.Pow(ep1_84, 4) + 3.000000 / 16 * Math.Pow(ep1_84, 6);
-            double C = 3.000000 / 80 * Math.Pow(ep1_84, 4) + 1.000000 / 16 * Math.Pow(ep1_84, 6);
-            double D = 1.000000 / 112 * Math.Pow(ep1_84, 6);
-
-            for (int i = 0; i < pointsArrayList.Count; ++i)
-            {
-                double[] T = new double[pointsArrayList.Count];
-
-                if (i >= 1 && i <= 6)
-                {
-                    for (int j = 0; j < pointsArrayList[i].Length - 1; ++j)
-                    {
-                        double fi_diff = pointsArrayList[i][j].y * PI / 180;
-                        double fi_m = pointsArrayList[i][j].y * PI / 180 / 2;
-                        K = 2 * Math.Pow(a, 2) * (1 - Math.Pow(ep1_84, 2)) * ((pointsArrayList[i][j + 1].x
-                            - pointsArrayList[i][j].x) * PI / 180);
-                        T[i] += K * (A * Math.Sin(fi_diff / 2) * Math.Cos(fi_m) - B * Math.Sin(3 * fi_diff / 2) * Math.Cos(3 * fi_m) +
-                            C * Math.Sin(5 * fi_diff / 2) * Math.Cos(5 * fi_m) - D * Math.Sin(7 * fi_diff / 2) * Math.Cos(7 * fi_m));
-                    }
-                    if (i == 6)
-                        area.Add(Math.Abs(T[i]));
                 }
                 else
                 {
-                    for (int j = 0; j < pointsArrayList[i].Length - 1; ++j)
-                    {
-                        double fi_diff = pointsArrayList[i][j].y * PI / 180;
-                        double fi_m = pointsArrayList[i][j].y * PI / 180 / 2;
-                        K = 2 * Math.Pow(a, 2) * (1 - Math.Pow(ep1_84, 2)) * ((pointsArrayList[i][j + 1].x - pointsArrayList[i][j].x) * PI / 180);
-                        T[i] += K * (A * Math.Sin(fi_diff / 2) * Math.Cos(fi_m) - B * Math.Sin(3 * fi_diff / 2) * Math.Cos(3 * fi_m) +
-                            C * Math.Sin(5 * fi_diff / 2) * Math.Cos(5 * fi_m) - D * Math.Sin(7 * fi_diff / 2) * Math.Cos(7 * fi_m));
-                    }
-                    area.Add(Math.Abs(T[i]));
+                    string[] data = lines[i].Split(',');//分割
+                    PointF point = new PointF();
+                    point.X = Convert.ToSingle(data[0]);
+                    point.Y = Convert.ToSingle(data[1]);//字符串转化为浮点型
+                    points.Add(point);
                 }
             }
-            for (int i = 0; i < 13; ++i)
+            return mapPoints;
+        }
+
+        //计算地图显示内容的四至
+        public static Boundary getBoundary(List<PointF[]> mapPoints)
+        {
+            Boundary boundary = new Boundary();
+            foreach (PointF[] pointArr in mapPoints)
             {
-                richTextBox1.Text += "第" + (i + 1) + "块地市的面积为：" + Form1.area[i].ToString() + "m²" + Environment.NewLine;
+                foreach (PointF point in pointArr)
+                {
+                    if (boundary.xMin > point.X)
+                        boundary.xMin = point.X;
+                    if (boundary.xMax < point.X)
+                        boundary.xMax = point.X;
+                    if (boundary.yMin > point.Y)
+                        boundary.yMin = point.Y;
+                    if (boundary.yMax < point.Y)
+                        boundary.yMax = point.Y;
+                }
+            }
+            return boundary;
+        }
+
+        //建立地图四至与绘制画布的变换关系
+        public static List<PointF[]> changePointsForDraw(List<PointF[]> mapPoints, PictureBox pictureBox, Boundary boundary)
+        {
+            List<PointF[]> outList = new List<PointF[]>();
+            float mapWidth = boundary.xMax - boundary.xMin;
+            float mapHeight = boundary.yMax - boundary.yMin;
+
+            float perWidth = pictureBox.Width / mapWidth;
+            float perHeight = pictureBox.Height / mapHeight;
+
+            float temp = (perWidth < perHeight) ? perWidth : perHeight;//确定变换比例
+            for (int i = 0; i < mapPoints.Count; i++)
+            {
+                PointF[] points = new PointF[mapPoints[i].Length];
+                for (int j = 0; j < mapPoints[i].Length; j++)
+                {
+                    points[j] = new PointF();
+                    points[j].X = (mapPoints[i][j].X - boundary.xMin) * temp;
+                    points[j].Y = (mapPoints[i][j].Y - boundary.yMin) * temp;
+                    if (perWidth > perHeight)
+                    {
+                        points[j].Y = pictureBox.Height - points[j].Y;
+                    }
+                    else
+                    {
+                        points[j].Y = mapHeight * temp - points[j].Y;
+                    }
+                }
+                outList.Add(points);
+            }
+            return outList;
+        }
+
+        //兰伯特投影
+        public static List<PointF[]> inverseCompute(List<PointF[]> mapPoints)
+        {
+            List<PointF[]> outList = new List<PointF[]>();
+            for (int i = 0; i < mapPoints.Count; i++)
+            {
+                PointF[] points = new PointF[mapPoints[i].Length];
+                for (int j = 0; j < mapPoints[i].Length; j++)
+                {
+                    points[j] =Lambert.blToXY(mapPoints[i][j]);
+                }
+                outList.Add(points);
+                Lambert .blToXY 
+            }
+            return outList;
+        }
+
+        // 转弧度
+        static double toRadian(double degree)
+        {
+            return degree / 180 * Math.PI;
+        }
+
+        //求MN对应直线的参数A、B、C
+        static void computeABC(out double A,out double B,out double C,PointF M,PointF N)
+        {
+            double xM = M.X, yM = M.Y, xN = N.X, yN = N.Y;
+            double temp = Math.Sqrt(Math.Pow(yM - yN, 2) + Math.Pow(xM - xN, 2));//两点间距离
+            A = (yM - yN) / temp;
+            B = (xN - xM) / temp;
+            C = (xM * yN - xN * yM) / temp;
+        }
+       
+        //求点point到直线距离
+        static double distanceOfPointToLine(PointF point,double A,double B,double C)
+        {
+            return  Math.Abs(A * point.X + B * point.Y + C);
+        }
+
+        //判断曲线是否为闭合曲线
+        public static bool isCircle(PointF[] points)
+        {
+            if(points[0].X==points[points.Length-1].X && points[0].Y==points[points.Length-1].Y)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        //求两点距离
+        static double distanceOfTwoPoints(PointF point1,PointF point2)
+        {
+            return Math.Sqrt(Math.Pow(point1.X - point2.X, 2) + Math.Pow(point1.Y - point2.Y, 2));
+        }
+
+        //切断闭合曲线，返回切点的索引
+        public static int breakpoint(PointF[] points)
+        {
+            List<double> d = new List<double>();//存放所有点到第一个点的距离
+            for(int i=0;i<points.Length;i++)
+            {
+                d.Add(distanceOfTwoPoints(points[0], points[i]));
+            }
+            return d.IndexOf(d.Max());
+        }
+
+        //道格拉斯-普克迭代函数
+        static void f(PointF[] points,List<PointF> compressedPoints ,int M,int N,double threshold)
+        {
+            double dh;
+            int flag;
+            double A,B,C;
+            int pointsCount = N - M + 1;
+            if (pointsCount>=3)
+            {
+                computeABC(out A, out B, out C, points[M], points[N]);//out参数用于在方法中返回多余的返回值，使得方法可以返回不同类型的返回值。
+                List<double> dArr = new List<double>();//存放点到MN的距离
+                for (int i = M+1; i <= N-1; i++)
+                {
+                    dArr.Add(distanceOfPointToLine(points[i], A, B, C));
+                }
+                dh = dArr.Max();
+                flag = (dh > threshold) ? 1 : 0;
+                int maxIndex=dArr.IndexOf(dh) + M+1;
+
+                if (flag == 0)//dh<=threshold
+                {
+                    if (N != points.Length - 1)     //如果没有遍历到末点
+                    {
+                        compressedPoints.Add(points[N]);
+                        f(points, compressedPoints, N, points.Length - 1, threshold);
+                    }
+                }
+                else//dh>threshold
+                {
+                    f(points, compressedPoints, M, maxIndex, threshold);
+                }
+            }
+            else 
+                if(pointsCount==2 && N!=points.Length-1)//如果只有两个点,且没有遍历到末点
+            {
+                compressedPoints.Add(points[N]);//添加末点
+                f(points, compressedPoints, N, points.Length - 1, threshold);
             }
         }
 
+        //主压缩函数
+        public static PointF[] DouglasPuckerCompress(PointF[] points,double threshold)
+        {
+            List<PointF> compressedPoints = new List<PointF>();
+            compressedPoints.Add(points[0]);//添加起点
+            f(points, compressedPoints, 0, points.Length - 1,threshold);
+            compressedPoints.Add(points[points.Length - 1]);//添加末点
+            return compressedPoints.ToArray();
+        }
+
+        //计算压缩率
+        public static string computeCompressRate(List<PointF[]> mapPointsXY,List<PointF[]> compressedPoints)
+        {
+            int Count1 = 0, Count2 = 0;
+            for (int i=0;i<mapPointsXY.Count;i++)
+            {
+                Count1 += mapPointsXY[i].Length;//压缩前点的数量
+                Count2 += compressedPoints[i].Length;//压缩后点的数量
+               
+            }
+            return Math.Round(Count2 * 100.0 / Count1).ToString() + "%";
+        }
+    
+        private void pictureBox1_Paint(object sender, PaintEventArgs g)
+        {
+            try
+            {
+                if (PointsBL.Count > 0)
+                {
+                    switch (flag)
+                    {
+                        case "BL":
+                            boundaryBL= getBoundary(PointsBL);
+                            Points =changePointsForDraw(PointsBL, Map, boundaryBL);
+                            break;
+                        case "XY":
+                            PointsXY = inverseCompute(PointsBL);
+                            boundaryXY= getBoundary(PointsXY);
+                            Points = changePointsForDraw(PointsXY, Map, boundaryXY);
+                            break;
+                        case "Compression":
+                            boundaryCompression =getBoundary(compressedPoints);
+                            Points =changePointsForDraw(compressedPoints, Map, boundaryCompression);
+                            break;
+                    }
+                    showMap(Points, g);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        
+        //显示地图
+        void showMap(List<PointF[]> Points, PaintEventArgs g) 
+        {
+            for (int i = 0; i < Points.Count; i++)
+                g.Graphics.DrawLines(Pens.Black, Points[i]);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (PointsBL.Count > 0)
+            {
+                flag = "XY";
+                Map.Refresh();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text != "")
+            {
+                try
+                {
+                    threshold = double.Parse(textBox1.Text);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message + "\n请输入正确的阈值!");
+                    return;
+                }
+                flag = "Compression";
+                compressedPoints.Clear();
+                for (int i = 0; i < PointsXY.Count; i++)
+                {
+                    if (isCircle(PointsXY[i]))
+                    {
+                        Console.WriteLine(i.ToString());
+                        //如果曲线闭合，则把曲线分为两段，分别压缩，然后合并
+                        int breakPointIndex = breakpoint(PointsXY[i]);
+                        PointF[] points1 = new PointF[breakPointIndex - 0 + 1];
+                        PointF[] points2 = new PointF[PointsXY[i].Length - 1 - breakPointIndex + 1];
+                        Array.Copy(PointsXY[i], points1, points1.Length);
+                        Array.Copy(PointsXY[i], breakPointIndex, points2, 0, points2.Length);
+                        PointF[] compressedPoints1 = DouglasPuckerCompress(points1, threshold);
+                        PointF[] compressedPoints2 = DouglasPuckerCompress(points2, threshold);
+                        PointF[] finalCompressedPoints = new PointF[compressedPoints1.Length + compressedPoints2.Length - 1];
+                        Array.Copy(compressedPoints1, finalCompressedPoints, compressedPoints1.Length);
+                        Array.Copy(compressedPoints2, 1, finalCompressedPoints, compressedPoints1.Length, compressedPoints2.Length - 1);
+                        compressedPoints.Add(finalCompressedPoints);
+                    }
+                    else
+                    {
+                        compressedPoints.Add(DouglasPuckerCompress(PointsXY[i], threshold));
+                    }
+                }
+                string compressedResultStr = textBox1.Text + "       " + computeCompressRate(PointsXY, compressedPoints);
+                listBox1.Items.Insert(1, compressedResultStr);
+                Map.Refresh();
+               
+            }
+            else
+                MessageBox.Show("请输入阈值!");
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
+            listBox1.Items.Add("阈值     压缩率");
+        }
     }
 }

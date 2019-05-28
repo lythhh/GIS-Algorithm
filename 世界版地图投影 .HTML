@@ -1,0 +1,318 @@
+
+    
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>世界地图投影变换</title>
+    </head>
+        <style>
+            html {
+                background: url(data/pattern.png);
+            }
+            body {
+                width: 1400px;
+                margin: 0 auto;
+                position: relative;
+                border-left: 3px solid #a66;
+                border-right: 3px solid #a66;
+                margin-top: 10px;
+            }
+            header,footer {
+                background-color: #ccc;
+                border-top: 3px solid #a66;
+                border-bottom: 3px solid #a66;
+            }
+            header {
+                height: 66px;
+            }
+            footer {
+			    clear: both;
+                height: 50px;
+            }
+            main {
+				height: 690px;
+                min-height: 690px;
+            }
+            .mapContainer {
+                height: 630px;
+                width: 1170px;
+                margin: 30px 0 30px 30px;
+                float: left;
+            }
+            .menuContainer {
+                width: 140px;
+                height: 630px;
+                max-height: 630px;
+                margin: 30px;
+                float: right;
+            }
+            .menuContainer .buttons {
+                width: 140px;
+                margin: 10px 0 10px 0;
+                padding: 6px;
+                line-height: 1.5;
+                font-family: '仿宋';
+                font-weight: bold;
+                font-size: 20px;
+                text-align: center;
+                border: 1px solid #a66;
+                position: relative;
+                top: 220px;
+            }
+            .buttons:hover {
+                color: white;
+                background-color: rgba(0,0,0,0.5);
+            }
+            h2 {
+                line-height: 1;
+                margin: 15px 0 15px 0;
+                font-family: '楷体';
+                font-size: 36px;
+                text-align: center;
+            }
+            h3 {
+                line-height: 1;
+                font-size: 20px;
+                margin: 15px 0 15px 0;
+                text-align: center;
+            }
+        </style>
+        <body onload="newPoints();getPoints();newgreatCTPoints(2.2,48.52,116.4,39.8)">
+            <header>
+                <h2>世界地图投影变换</h2>
+            </header>
+            <main>
+                <div class="mapContainer">
+                    <canvas id="worldMap" width="1170" height="630" style="border: 1px solid #a66">你的浏览器不支持html5画布，请使用现代浏览器</canvas>
+                </div>
+                <div class="menuContainer">
+                    <button class="buttons" onclick="initCanvas(worldMap);drawGCS(locationPoints,getRandomColor(),1.5);drawGCS(coordPoints,'gray',1);drawGCS(greatCTPoints,'red','1')">WGS84坐标系</button>
+                    <button class="buttons" onclick="initCanvas(worldMap);drawMercator(locationPoints,getRandomColor(),1.5);drawMercator(coordPoints,'gray',1);drawMercator(greatCTPoints,'red','1')">墨卡托投影</button>
+                    <button class="buttons" onclick="initCanvas(worldMap);drawLambert(locationPoints,getRandomColor(),1.5);drawLambert(coordPoints,'gray',1);drawLambert(greatCTPoints,'red','1')">兰伯特投影</button>
+                </div>
+            </main>
+            <footer>
+                <h3>16170711</h3>
+            </footer>
+        </body>
+        <script>
+            e2=0.00669437999013;   //WGS84坐标系椭球体的第一偏心率平方
+			e02=0.006739496742227; //WGS84坐标系椭球体的第二偏心率平方
+			a=6378137;             //WGS84坐标系椭球体的长半轴
+			b=6356752.3142;        //WGS84坐标系椭球体的短半轴
+            e=1/298.257224;        //WGS84坐标系椭球体的扁率
+            //初始化画布
+            function initCanvas(canvasId) {
+                clearCanvas(canvasId);
+                cxt=canvasId.getContext('2d');
+                cxt.translate(585,315);
+                cxt.scale(1,-1);
+            }
+            //销毁画布
+            function clearCanvas(canvasId) {  
+                cxt=canvasId.getContext("2d");  
+                canvasId.height=canvasId.height;
+            }
+			
+			function getRandomColor() {
+                return "rgb(" + Math.round(Math.random() * 255) + "," + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 255) + ')';
+            }
+            function newPoints() {
+                locationPoints=new Array();
+				coordPoints=new Array();
+            }
+            function newgreatCTPoints(long0,lat0,longz,latz) {
+                greatCTPoints=new Array();
+                greatCTPoints.push(long0);
+                greatCTPoints.push(lat0);
+                getGreatCTPoints(long0,lat0,longz,latz);
+                greatCTPoints.push(longz);
+                greatCTPoints.push(latz);
+                greatCTPoints.push(999);
+            }
+            function getGreatCTPoints(long0,lat0,longz,latz) {
+				var x0=long0*Math.PI/180; //起点经度弧度
+                var y0=lat0*Math.PI/180;  //起点纬度弧度
+				var xz=longz*Math.PI/180; //终点经度弧度
+                var yz=latz*Math.PI/180;  //终点纬度弧度
+				
+				var Bx=Math.cos(yz)*Math.cos(xz-x0);
+				var By=Math.cos(yz)*Math.sin(xz-x0);
+				var latm=Math.atan2(Math.sin(y0)+Math.sin(yz),Math.sqrt((Math.cos(y0)+Bx)*(Math.cos(y0)+Bx)+By*By));
+				var lonm=x0+Math.atan2(By,Math.cos(y0)+Bx);
+				
+				var xm=lonm*180/Math.PI;  //将弧度换算为经度
+				var ym=latm*180/Math.PI;  //将弧度换算为纬度
+				
+				if(Math.abs(xm-long0)<=5) {
+					greatCTPoints.push(xm);
+					greatCTPoints.push(ym);
+				}
+				else {
+					getGreatCTPoints(long0,lat0,xm,ym);
+					greatCTPoints.push(xm);
+					greatCTPoints.push(ym);
+					getGreatCTPoints(xm,ym,longz,latz);
+				}
+			}
+			
+			function getPoints() {
+			    //经纬网交点坐标
+			    for(var y=-90;y<=90;y+=5) {
+				    for(var x=-180;x<=180;x+=5) {
+					    coordPoints.push(x);  
+					    coordPoints.push(y); 
+				    }
+				    coordPoints.push(999);   
+			    }
+			    for(var x=-180;x<=180;x+=5) {
+				    for(var y=-90;y<=90;y+=5) {
+					    coordPoints.push(x); 
+					    coordPoints.push(y); 	
+				    }
+				    coordPoints.push(999);   
+			    }
+				
+				//世界国家WGS-84坐标
+                var requestURL='https://geoyclv.github.io/mygisApp/public/data/country.txt';
+                var request=new XMLHttpRequest();
+	            request.open('GET', requestURL);
+	            request.responseType='text';
+                request.send();
+				request.onload=function(e) {
+					var str=request.response;
+					var numcharacter="";
+					var i=0;
+					var flag=0;
+					var character=str[flag];
+					while(character!=null) {
+						if(character=="E") {
+							flag+=5;
+							character=str[flag];
+						} 
+                        else {
+							while(character!="\n") {
+								character=str[++flag];
+							} //while2
+							character=str[++flag];
+							while(character!="E") {
+								while(character!=",") {
+									numcharacter+=character;
+									character=str[++flag];
+								} //while4
+								character=str[++flag];
+								locationPoints[i++]=parseFloat(numcharacter);
+								numcharacter="";
+								while(character!="\n") {
+									numcharacter+=character;
+									character=str[++flag];
+								} //while5
+								character=str[++flag];
+								locationPoints[i++]=parseFloat(numcharacter);
+								numcharacter="";
+                            } //while3
+                            locationPoints[i++]=999;
+							flag+=5;
+							character=str[flag];
+						} //else
+					} //while1
+				} //reader
+            } //function	
+            function drawGCS(points,lcolor,lwidth) {
+                var x=new Array();
+                var y=new Array();
+                N=points.length;
+				cxt.lineWidth=lwidth;
+				cxt.strokeStyle=lcolor;
+				
+                for(var i=0,j=0;i<N;i++) {
+                    if(points[i]!=999) {
+                        x[j]=points[i]*3;
+                        y[j]=points[++i]*3;
+                        j++;
+                    }
+                    else {
+                        cxt.beginPath();
+                        cxt.moveTo(x[0],y[0]);
+                        for(var k=1;k<j;k++) {
+                            cxt.lineTo(x[k],y[k]);
+                        }
+                        cxt.stroke();
+                        j=0;
+                    }
+                }
+            }
+            function drawMercator(points,lcolor,lwidth) {
+                var x=new Array();
+                var y=new Array();
+                var N=points.length;
+				cxt.lineWidth=lwidth;
+				cxt.strokeStyle=lcolor;
+				
+				var B0=0; //标准纬度
+				var L0=0; //原点经度
+				var K=(a*a/b)/Math.sqrt(1+e02*Math.cos(B0)*Math.cos(B0))*Math.cos(B0);
+                for(var i=0,j=0;i<N;i++) {
+                    if(points[i]!=999) {
+                        var L=points[i]*Math.PI/180;
+                        var B=points[++i]*Math.PI/180;
+                        
+                        x[j]=K*(L-L0)*0.000080847*2/9; //乘的数字是根据经度和投影变换后对应的值得到的
+                        y[j]=(K*Math.log(Math.tan(Math.PI/4+B/2)*Math.pow(((1-e*Math.sin(B))/(1+e*Math.sin(B))),e/2)))*0.000080847*2/9;
+                        j++;
+                    }
+                    else {
+                        cxt.beginPath();
+                        cxt.moveTo(x[0],y[0]);
+                        for(var m=1;m<j;m++) {
+                            cxt.lineTo(x[m],y[m]);
+                        }
+                        cxt.stroke();
+                        j=0;
+                    }
+                }
+            }
+            function drawLambert(points,lcolor,lwidth) {
+                var x=new Array();
+                var y=new Array();
+                var N=points.length;
+				cxt.strokeStyle=lcolor;
+				cxt.lineWidth=lwidth;
+                var B1=20*Math.PI/180;  //第一标准纬线
+				var B2=40*Math.PI/180;  //第二标准纬线
+				var L0=0*Math.PI/180;   //投影原点经度
+				var B0=0*Math.PI/180;   //投影原点纬度
+				var mB1=Math.cos(B1)/(Math.sqrt(1-Math.pow(e,2)*Math.pow(Math.sin(B1),2)));
+				var mB2=Math.cos(B2)/(Math.sqrt(1-Math.pow(e,2)*Math.pow(Math.sin(B2),2)));
+				var tB0=Math.tan((Math.PI-2*B0)/4)/Math.pow((1-e*Math.sin(B0)/(1+e*Math.sin(B0))),(e/2));
+				var tB1=Math.tan((Math.PI-2*B1)/4)/Math.pow((1-e*Math.sin(B1)/(1+e*Math.sin(B1))),(e/2));
+				var tB2=Math.tan((Math.PI-2*B2)/4)/Math.pow((1-e*Math.sin(B2)/(1+e*Math.sin(B2))),(e/2));
+				var n=Math.log(mB1/mB2)/Math.log(tB1/tB2);
+				var F=mB1/(n*Math.pow(tB1,n));
+				var r0=a*F*Math.pow(tB0,n);
+               
+                for(var i=0,j=0;i<N;i++) {
+                    if(points[i]!=999) {
+                        var L=points[i]*Math.PI/180;
+                        var B=points[++i]*Math.PI/180;
+                        var t=Math.tan((Math.PI-2*B)/4)/Math.pow((1-e*Math.sin(B)/(1+e*Math.sin(B))),(e/2));
+						var r=a*F*Math.pow(t,n);
+						var angle=n*(L-L0);
+			          
+                        x[j]=r*Math.sin(angle)*0.00009*2/9;
+                        y[j]=(r0-r*Math.cos(angle))*0.00009*2/9+25;
+                        j++;
+                    }
+                    else {
+                        cxt.beginPath();
+                        cxt.moveTo(x[0],y[0]);
+                        for(var k=1;k<j;k++) {
+                            cxt.lineTo(x[k],y[k]);
+                        }
+                        cxt.stroke();
+                        j=0;
+                    }
+                }
+            }
+        </script>
+</html>

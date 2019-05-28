@@ -1,0 +1,278 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>中国地图投影变换</title>
+    </head>
+        <style>
+           *{margin:10;padding:20;}
+            html{
+                background: url(data/pattern.png);
+            }
+            body{
+                width: 1400px;
+                margin: 0 auto;
+                position: relative;
+                border-left: 3px solid #a66;
+                border-right: 3px solid #a66;
+                margin-top: 10px;
+            }
+            header,footer{
+                background-color: #ccc;
+                border-top: 3px solid #a66;
+                border-bottom: 3px solid #a66;
+            }
+            header{
+                height: 66px;
+            }
+            footer{
+                height: 50px;
+				clear: both;
+            }
+            main{
+                background-color: white;
+                min-height: 690px;
+            }
+            .mapContainer{
+                height: 630px;
+                width: 1170px;
+                margin: 30px 0 30px 30px;
+                float: left;
+            }
+            .menuContainer{
+                width: 140px;
+                height: 630px;
+                max-height: 630px;
+                margin: 30px;
+                float: right;
+            }
+            .menuContainer .buttons{
+                width: 140px;
+                margin: 10px 0 10px 0;
+                padding: 6px;
+                line-height: 1.5;
+                font-family: '仿宋';
+                font-weight: bold;
+                font-size: 20px;
+                text-align: center;
+                border: 1px solid #a66;
+                position: relative;
+                top: 160px;
+            }
+            .buttons:hover{
+                color: white;
+                background-color: rgba(0,0,0,0.5);
+            }
+            h2{
+                line-height: 1;
+                margin: 15px 0 15px 0;
+                font-family: '楷体';
+                font-size: 36px;
+                text-align: center;
+            }
+            h3{
+                line-height: 1;
+                font-size: 20px;
+                margin: 15px 0 15px 0;
+                text-align: center;
+            }
+        </style>
+        <body>
+            <header>
+                <h2>中国地图投影变换</h2>
+            </header>
+            <main>
+                <div class="mapContainer">
+                    <canvas id="chinaMap" width="1170" height="630" style="border: 1px solid black">你的浏览器不支持html5画布，请使用现代浏览器</canvas>
+                </div>
+                <div class="menuContainer">
+                    <input type="file" style="visibility: hidden;" id="fileChina" onchange="newPoints();getPoints()">
+                    <button class="buttons" onclick="fileChina.click()">加载文件</button>
+                    <button class="buttons" onclick="clearCanvas();drawGCS(locationPoints,getRandomColor(),1.5);drawGCS(coordPoints,'gray',1)">54坐标系</button>
+                    <button class="buttons" onclick="clearCanvas();drawMercator(locationPoints,getRandomColor(),1.5);drawMercator(coordPoints,'gray',1)">墨卡托投影</button>
+                    <button class="buttons" onclick="clearCanvas();drawLambert(locationPoints,getRandomColor(),1.5);drawLambert(coordPoints,'gray',1)">兰伯特投影</button>
+                </div>
+            </main>
+            <footer>
+                <h3>16170711</h3>
+            </footer>
+        </body>
+        <script>
+            canvas1=document.getElementById("chinaMap");
+            cxt=canvas1.getContext('2d');
+            cxt.translate(-359.5,586);
+            cxt.scale(1,-1);
+            e2=0.006693421622966;  //54坐标系椭球体的第一偏心率平方
+			e02=0.006738525414684; //54坐标系椭球体的第二偏心率平方
+			a=6378245;             //54坐标系椭球体的长半轴
+			b=6356863.0187730473;  //54坐标系椭球体的短半轴
+            e=1/298.3;             //54坐标系椭球体的扁率
+            function newPoints() {
+                locationPoints=new Array();
+				coordPoints=new Array();
+            }
+			
+			function getPoints() {
+			    //var k=0;
+			    for (var y=0;y<=60;y+=5) {
+				    for (var x=45;x<=165;x+=5) {
+					    coordPoints.push(x);  //coordPoints[k]=x;
+					    coordPoints.push(y);  //coordPoints[++k]=y;
+					    //k++;
+				    }
+				    coordPoints.push(999);    //coordPoints[k++]=999;
+			    }
+			    for (var x=45;x<=165;x+=5) {
+				    for (var y=0;y<=60;y+=5) {
+					    coordPoints.push(x);  //coordPoints[k]=x;
+					    coordPoints.push(y);  //coordPoints[++k]=y;
+					    //k++;
+				    }
+				    coordPoints.push(999);    //coordPoints[k++]=999;
+			    }
+				
+                var file=document.getElementById("fileChina").files[0];
+				var reader=new FileReader();
+				reader.readAsText(file);
+				reader.onload=function(e) {
+					var str=reader.result;  //this.result
+					var numcharacter="";
+					var i=0;
+					var flag=0;
+					var character=str[flag];
+					while (character!=null) {
+						if (character=="E") {
+							flag+=5; 
+							character=str[flag];
+						} //该判断条件用来跳过最后一条线段末尾的两个'END'，当跳过第二个'END'时，str字符串读取结束，结束总循环while1
+                        else {
+							while (character!="\n") {
+								character=str[++flag];
+							} //while2 该循环用于跳过ID编号，直接到达下一行经度数字字符的第一位字符的前面位置
+							character=str[++flag]; //下一行经度数字字符的第一位赋值给character
+							while (character!="E") {
+								while (character!=",") {
+									numcharacter+=character;
+									character=str[++flag];
+								} //while4 long 该循环用于将经度数字字符一位一位地加到字符numcharacter中
+								character=str[++flag];
+								locationPoints[i++]=parseFloat(numcharacter); //long 将保存了经度所有位数字字符的字符串转为浮点数
+								numcharacter="";
+								while (character!="\n") {
+									numcharacter+=character;
+									character=str[++flag];
+								} //while5 lat 该循环用于将纬度数字字符一位一位地加到字符numcharacter中
+								character=str[++flag];
+								locationPoints[i++]=parseFloat(numcharacter); //lat 将保存了纬度所有位数字字符的字符串转为浮点数
+								numcharacter="";
+                            } //while3
+                            locationPoints[i++]=999; //当遇到E时，结束while3循环，用‘999’标记一条线的结束
+							flag+=5; //一条线段读取结束之后跳到下一条线段的ID的第一位字符，
+							character=str[flag]; //当是最后一条线时，即将'E'赋值给character，否则是将线段ID数字字符的第一位字符赋值给character
+						} //else
+					} //while1
+				} //reader
+            } //function
+            function clearCanvas() {
+				cxt.clearRect(-500, -500, canvas1.width+1080, canvas1.height+800);
+			}
+			
+			function getRandomColor() {
+                return "rgb(" + Math.round(Math.random() * 255) + "," + Math.round(Math.random() * 255) + ',' + Math.round(Math.random() * 10) + ')';
+            }	
+            function drawGCS(points,lcolor,lwidth) {
+                var x=new Array();
+                var y=new Array();
+                N=points.length;
+				cxt.lineWidth=lwidth;
+                cxt.strokeStyle=lcolor;
+				
+                for(var i=0,j=0;i<N;i++) {
+                    if(points[i]!=999) {
+                        x[j]=points[i]*9;
+                        y[j]=points[++i]*9;
+                        j++;
+                    }
+                    else {
+                        cxt.beginPath();
+                        cxt.moveTo(x[0],y[0]);
+                        for(var k=1;k<j;k++) {
+                             cxt.lineTo(x[k],y[k]);
+                        }
+                        cxt.stroke();
+                        j=0;
+                    }
+                }
+            }
+            function drawMercator(points,lcolor,lwidth) {
+                var x=new Array();
+                var y=new Array();
+                var N=points.length;
+				cxt.lineWidth=lwidth;
+                cxt.strokeStyle=lcolor;
+				
+				var B0=0; //标准纬度
+				var L0=0; //原点经度
+				var K=(a*a/b)/Math.sqrt(1+e02*Math.cos(B0)*Math.cos(B0))*Math.cos(B0);
+                for(var i=0,j=0;i<N;i++) {
+                    if(points[i]!=999) {
+                        var L=points[i]*Math.PI/180;
+                        var B=points[++i]*Math.PI/180;
+                        x[j]=K*(L-L0)*0.000080847; //乘的数字是根据经度和投影变换后对应的值得到的
+                        y[j]=(K*Math.log(Math.tan(Math.PI/4+B/2)*Math.pow(((1-e*Math.sin(B))/(1+e*Math.sin(B))),e/2)))*0.000080847;
+                        j++;
+                    }
+                    else {
+                        cxt.beginPath();
+                        cxt.moveTo(x[0],y[0]);
+                        for(var m=1;m<j;m++) {
+                             cxt.lineTo(x[m],y[m]);
+                        }
+                        cxt.stroke();
+                        j=0;
+                    }
+                }
+            }
+            function drawLambert(points,lcolor,lwidth) {
+                var x=new Array();
+                var y=new Array();
+                var N=points.length;
+				cxt.lineWidth=lwidth;
+                cxt.strokeStyle=lcolor;
+                var B1=20/180*Math.PI;  //第一标准纬线
+				var B2=40/180*Math.PI;  //第二标准纬线
+				var L0=105/180*Math.PI; //投影原点经度
+				var B0=0/180*Math.PI;   //投影原点纬度
+				var mB1=Math.cos(B1)/(Math.sqrt(1-Math.pow(e,2)*Math.pow(Math.sin(B1),2)));
+				var mB2=Math.cos(B2)/(Math.sqrt(1-Math.pow(e,2)*Math.pow(Math.sin(B2),2)));
+				var tB0=Math.tan((Math.PI-2*B0)/4)/Math.pow((1-e*Math.sin(B0)/(1+e*Math.sin(B0))),(e/2));
+				var tB1=Math.tan((Math.PI-2*B1)/4)/Math.pow((1-e*Math.sin(B1)/(1+e*Math.sin(B1))),(e/2));
+				var tB2=Math.tan((Math.PI-2*B2)/4)/Math.pow((1-e*Math.sin(B2)/(1+e*Math.sin(B2))),(e/2));
+				var n=Math.log(mB1/mB2)/Math.log(tB1/tB2);
+				var F=mB1/(n*Math.pow(tB1,n));
+				var r0=a*F*Math.pow(tB0,n);
+               
+                for(var i=0,j=0;i<N;i++) {
+                    if(points[i]!=999) {
+                        var L=points[i]*Math.PI/180;
+                        var B=points[++i]*Math.PI/180;
+                        var t=Math.tan((Math.PI-2*B)/4)/Math.pow((1-e*Math.sin(B)/(1+e*Math.sin(B))),(e/2));
+						var r=a*F*Math.pow(t,n);
+						var angle=n*(L-L0);
+			          
+                        x[j]=r*Math.sin(angle)*0.00009+945;
+                        y[j]=(r0-r*Math.cos(angle))*0.00009-20;
+                        j++;
+                    }
+                    else {
+                        cxt.beginPath();
+                        cxt.moveTo(x[0],y[0]);
+                        for(var k=1;k<j;k++) {
+                             cxt.lineTo(x[k],y[k]);
+                        }
+                        cxt.stroke();
+                        j=0;
+                    }
+                }
+            }
+        </script>
+</html>

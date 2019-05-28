@@ -1,0 +1,390 @@
+ 
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>计算显示江苏省面积</title>
+    </head>
+        <style>
+            html{
+                background: url(data/pattern.png);
+            }
+            body{
+                width: 1300px;
+                margin: 0 auto;
+                position: relative;
+                border-left: 3px solid #a66;
+                border-right: 3px solid #a66;
+                /*margin-top: 10px;*/
+            }
+            header,footer{
+                background-color: #ccc;
+                border-top: 3px solid #a66;
+                border-bottom: 3px solid #a66;
+            }
+            header{
+                height: 60px;
+            }
+            main{
+                position: relative;
+                background-color: rgba(0,0,0,0.4);
+                min-height: 720px;
+                height: 720px;
+                /*IE不支持main标签，所以footer和main容器里面的画布容器紧靠在一起*/
+                /*top: 10px;*/
+                /*bottom: 10px;*/
+                /*相对定位同样使main容器的background-color失效,此时的背景色为上一级的即html的*/
+                /*margin-bottom: 30px;*/
+                /*margin-top: 30px;*/
+                /*外页边距处main容器的background-color失效，background-color应用于content（如果是默认盒模型则作用于padding和内容）*/
+                /*总结：对于HTML分节标签如：header、main、footer等最好不要应用相对定位和外页边距，这样的话三者会分开，而不是连接在一起*/
+            }
+            footer{
+                height: 40px;
+				clear: both;
+                /*兼容IE，footer前的两个画布应用了浮动，不清除浮动则画布会高于footer，以至于footer和header紧靠*/
+                position: relative;
+                top: 0px;
+                /*这个定位是相对于main容器定位，等于没有*/
+            }
+            .menuContainer button{
+                /*background-color: #ccc;*/
+                width: 301px;
+                display: block;
+                margin: 0 auto;
+                line-height: 1.5;
+                font-family: '仿宋';
+                font-weight: bold;
+                font-size: 20px;
+                text-align: center;
+                border: 1px solid #a66;
+                position: relative;
+                /*relative不脱离文档流，所以是相对与上一级元素即header的定位*/
+                /*absolute脱离文档流，所以是相对与父元素即html或者body的定位*/
+            }
+            .menuContainer button:hover{
+                color: white;
+                background-color: rgba(0,0,0,0.5);
+            }
+            .canvasContainer,.menuContainer{
+                clear: both;
+                margin: 0 auto;
+                width: 95%;
+            }
+            .canvasContainer #canvas1,.menuContainer .canvas1Button{
+                float: left;
+            }
+            .canvasContainer #canvas2,.menuContainer .canvas2Button{
+                float: right;
+            }
+            h2{
+                line-height: 1;
+                margin: 15px 0 15px 0;
+                font-family: '楷体';
+                font-size: 30px;
+                text-align: center;
+            }
+            h3{
+                line-height: 1;
+                font-size: 20px;
+                margin: 10px 0 10px 0;
+                text-align: center;
+            }
+        </style>
+        <body>
+            <header>
+                <h2>计算显示江苏省面积</h2>
+            </header>
+            <main>
+                <div class="menuContainer">
+                    <input type="file" style="visibility: hidden;position: absolute;" id="fileJiangsu" onchange="newPoints();getMercatorPoints(fileJiangsu);">
+                    <button onclick="fileJiangsu.click()" style="margin-bottom: 20px;top: 10px;">加载文件</button>
+                    <button class="canvas1Button" onclick="drawMercator(canvas1,MercatorPoints)">墨卡托投影</button>
+                    <button class="canvas1Button" onclick="MercatorArea(MercatorPoints);processAreaData(MercatorPointsArea,lastMercatorPointsArea);showArea(canvas1,lastMercatorPointsArea)">计算显示面积</button>
+                    <button class="canvas2Button" onclick="getGCSPoints(MercatorPoints);GCSArea(GCSPoints);processAreaData(GCSPointsArea,lastGCSPointsArea);showArea(canvas2,lastGCSPointsArea)">计算显示面积</button>
+                    <button class="canvas2Button" onclick="getGCSPoints(MercatorPoints);drawGCS(canvas2,GCSPoints)">墨卡托反解</button>
+                </div>
+                <div class="canvasContainer">			
+                    <canvas id="canvas1" width="600" height="600" style="border:1px solid #a66">your browser does not support the canvas tag </canvas>
+                    <canvas id="canvas2" width="600" height="600" style="border:1px solid #a66">your browser does not support the canvas tag </canvas>
+                </div>
+            </main>
+            <footer>
+                <h3>10170312</h3>
+            </footer>
+            <script>
+                //销毁画布
+                function clearCanvas(canvasId) {
+                    cxt=canvasId.getContext("2d");  
+                    canvasId.height=canvasId.height;
+                }
+                
+                function getRandomColor() {
+                    return "rgb(" +Math.round(Math.random()*255)+ "," +Math.round(Math.random()*255)+ "," +Math.round(Math.random()*255)+ ")";
+                }
+    
+                function initCanvas(canvasId,cxtColor,cxtWidth) {
+                    clearCanvas(canvasId);
+                    var cxt=canvasId.getContext("2d");
+                    cxt.translate(-415,650);
+                    cxt.scale(1,-1);
+                    cxt.lineWidth=cxtWidth;
+                    cxt.strokeStyle=cxtColor;
+                }
+    
+                function newPoints() {
+                    e2=0.006693421622966;  //54坐标系椭球体的第一偏心率平方
+			        e02=0.006738525414684; //54坐标系椭球体的第二偏心率平方
+			        a=6378245;             //54坐标系椭球体的长半轴
+			        b=6356863.0187730473;  //54坐标系椭球体的短半轴
+                    e=1/298.3;             //54坐标系椭球体的扁率
+                    xf=714.75;             //江苏省经度范围平均值扩大6倍后作为画布放大显示中心点x
+                    yf=198.25;             //江苏省纬度范围平均值扩大6倍后作为画布放大显示中心点y
+                    bigSize=15;            //放大倍数
+                    MercatorPoints=new Array();        //存储墨卡托投影点
+                    GCSPoints=new Array();             //存储墨卡托反解后的点
+                    lineNumber=new Array();            //存储线段ID
+                    MercatorPointsArea=new Array();    //存储墨卡托投影下每个ID的面积
+                    GCSPointsArea=new Array();         //存储地理坐标系下每个ID的面积
+                    lastMercatorPointsArea=new Array();//存储最终存储墨卡托投影下每个城市的面积
+                    lastGCSPointsArea=new Array();     //存储最终地理坐标系下每个城市的面积
+                }
+                
+                function getMercatorPoints(fileId) {
+                    var file=fileId.files[0];
+                    var reader=new FileReader();
+                    reader.readAsText(file);
+                    reader.onload=function(e) {
+                        var str=reader.result;  //this.result
+                        var numcharacter="";
+                        var j=0;
+                        var i=0;
+                        var flag=0;
+                        var character=str[flag];
+                        while (character!=null) {
+                            if (character=="E") {
+                                flag+=5; 
+                                character=str[flag];
+                            } //该判断条件用来跳过最后一条线段末尾的两个'END'，当跳过第二个'END'时，str字符串读取结束，结束总循环while1
+                            else {
+                                while (character!="\n") {
+                                    numcharacter+=character;
+                                    character=str[++flag];
+                                } //while2 该循环用于跳过ID编号，直接到达下一行经度数字字符的第一位字符的前面位置
+                                character=str[++flag]; //下一行经度数字字符的第一位赋值给character
+                                lineNumber.push(parseFloat(numcharacter)); //保存线段ID
+                                numcharacter="";
+                                while (character!="E") {
+                                    while (character!=",") {
+                                        numcharacter+=character;
+                                        character=str[++flag];
+                                    } //while4 long 该循环用于将经度数字字符一位一位地加到字符numcharacter中
+                                    character=str[++flag];
+                                    MercatorPoints[i++]=parseFloat(numcharacter); //long 将保存了经度所有位数字字符的字符串转为浮点数
+                                    numcharacter="";
+                                    while (character!="\n") {
+                                        numcharacter+=character;
+                                        character=str[++flag];
+                                    } //while5 lat 该循环用于将纬度数字字符一位一位地加到字符numcharacter中
+                                    character=str[++flag];
+                                    MercatorPoints[i++]=parseFloat(numcharacter); //lat 将保存了纬度所有位数字字符的字符串转为浮点数
+                                    numcharacter="";
+                                } //while3
+                                MercatorPoints[i++]="END"+lineNumber[j++]; //当遇到E时，结束while3循环，用线段ID标记一条线的结束
+                                flag+=5; //一条线段读取结束之后跳到下一条线段的ID的第一位字符，
+                                character=str[flag]; //当是最后一条线时，即将'E'赋值给character，否则是将线段ID数字字符的第一位字符赋值给character
+                            } //else
+                        } //while1
+                    } //reader
+                } //function
+                function getGCSPoints(MercatorPoints) {
+                    //getMercatorPoints(fileJiangsu);
+                    //该语句解决从右到左点击功能按钮时画布1计算显示面积不能跑的BUG
+                    //经过断点调试发现调用此函数时，并没有重新提取字符到MercatorPoints数组中
+                    getMercatorPoints(fileJiangsu);
+                    if(GCSPoints.length==0) {
+                       var N=MercatorPoints.length;
+                       var x=new Array();
+                       var y=new Array();
+                       var B0=0; //标准纬度
+                       var L0=0; //原点经度
+                       var K=(a*a/b)/Math.sqrt(1+e02*Math.cos(B0)*Math.cos(B0))*Math.cos(B0);
+                       for(var l=0,j=0,m=0;l<N;l++) {
+                            if(MercatorPoints[l]!="END"+lineNumber[m]) {
+                                x[j]=(MercatorPoints[l]/K+L0)*180/Math.PI;
+                                GCSPoints.push(x[j]);
+                                var B=32*Math.PI/180;
+                                var t=0;
+                                var tempPoint=MercatorPoints[++l];
+                                while(1) {
+                                    t=Math.PI/2-2*Math.atan(Math.exp(-tempPoint/K)*Math.exp((e/2)*Math.log(1-e*Math.sin(B)/(1+e*Math.sin(B)))));
+                                    if(Math.abs(B-t)<0.00000001)
+                                        break;
+                                    else
+                                        B=t;
+                                }
+                                y[j]=B*180/Math.PI;
+                                GCSPoints.push(y[j]);
+                                j++;
+                            }
+                            else {
+                                GCSPoints.push("END"+lineNumber[m]);
+                                j=0;
+                                m++;
+                            }
+                        }
+                    }
+                }
+    
+                function drawGCS(canvasId,points) {
+                    initCanvas(canvasId,getRandomColor(),1.5);
+                    var N=points.length;
+                    var x=new Array();
+                    var y=new Array();
+                    for(var i=0,j=0,m=0;i<N;i++) {
+                        if(points[i]!="END"+lineNumber[m]) {
+                            x[j]=points[i];
+                            y[j]=points[++i];
+                            j++;
+                        }
+                        else {
+                            cxt.beginPath();
+                            cxt.fillStyle=getRandomColor();
+                            cxt.moveTo(x[0]*6*bigSize+(1-bigSize)*xf,y[0]*6*bigSize+(1-bigSize)*yf+180);
+                            for(var k=1;k<j;k++) {
+                                cxt.lineTo(x[k]*6*bigSize+(1-bigSize)*xf,y[k]*6*bigSize+(1-bigSize)*yf+180);
+                            }
+                            cxt.stroke();
+                            cxt.fill();
+                            j=0;
+                            m++;
+                        }
+                    }
+                }
+    
+                function drawMercator(canvasId,points) {
+                    initCanvas(canvasId,getRandomColor(),1.5);
+                    //如果初始化画布里面的cxt为局部变量，那么在drawMercator函数中要访问cxt可以使用闭包来解决
+                    //初始化画布里面的颜色为线条颜色，下面的随机色为填充颜色
+                    var N=points.length;
+                    var x=new Array();
+                    var y=new Array();
+                    
+                    for(var i=0,j=0,m=0;i<N;i++) {
+                        if(points[i]!="END"+lineNumber[m]) {
+                            x[j]=points[i]*0.00080847+(1-bigSize)*xf;
+                            y[j]=points[++i]*0.00080847+(1-bigSize)*yf;
+                            j++;
+                        }
+                        else {
+                            cxt.beginPath();
+                            cxt.fillStyle=getRandomColor();
+                            cxt.moveTo(x[0],y[0]);
+                            for(var k=1;k<j;k++) {
+                                cxt.lineTo(x[k],y[k]);
+                            }
+                            cxt.stroke();
+                            cxt.fill();
+                            j=0;
+                            m++;
+                        }
+                    }
+                }
+                function MercatorArea(points) {
+                    if(MercatorPointsArea.length==0) {
+                        var N=points.length;        
+                        for(var i=0,S=0,m=0;i<N;) {
+                            var tempS=(points[i]+points[i+2])*(points[i+3]-points[i+1])/2;
+                            S+=tempS;
+                            if(points[i+4]==="END"+lineNumber[m]) {
+                                if(GCSPointsArea.length<lineNumber.length) {
+                                    MercatorPointsArea[m]=[lineNumber[m],Math.abs(S)];
+                                }
+                                S=0;
+                                i+=5;
+                                m++;
+                            }
+                            else {
+                                i+=2;
+                            }
+                        }
+                    }
+                }
+                function GCSArea(points) {
+                    if(GCSPointsArea.length==0) {
+                        var N=points.length;
+                        var e1 = Math.sqrt(Math.pow(a / b, 2) - 1);
+                        var B0 = 30.75 / 180 * Math.PI; //江苏省最低纬度
+				        var AA = 1 + 1 / 2 * (e1 * e1) + 3 / 8 * (Math.pow(e1, 4)) + 5 / 16 * (Math.pow(e1, 6));
+				        var BB = 1 / 6 * (e1 * e1) + 3 / 16 * (Math.pow(e1, 4)) + 3 / 16 * (Math.pow(e1, 6));
+				        var CC = 3 / 80 * (Math.pow(e1, 4)) + 1 / 16 * (Math.pow(e1, 6));
+				        var DD = 1 / 112 * (Math.pow(e1, 6));
+                        for(var i=0,S=0,m=0;i<N;) {
+                            var B1 = points[i + 1] / 180 * Math.PI;
+					        var B2 = points[i + 3] / 180 * Math.PI;
+					        var B3 = (B1 + B2) / 2;
+					        var dB = B3 - B0;
+					        var aB = (B3 + B0) / 2;
+					        var L1 = points[i] / 180 * Math.PI;
+					        var L2 = points[i + 2] / 180 * Math.PI;
+					        var K = 2 * a * a * (1 - e1 * e1) * (L2 - L1);
+					        S += K * (AA * Math.sin(dB / 2) * Math.cos(aB) - BB * Math.sin(3 * dB / 2) * Math.cos(3 * aB) +
+						    CC * Math.sin(5 * dB / 2) * Math.cos(5 * aB) - DD * Math.sin(7 * dB / 2) * Math.cos(7 * aB));
+                            if(points[i+4]==="END"+lineNumber[m]) {
+                                if(GCSPointsArea.length<lineNumber.length) {
+                                    GCSPointsArea[m]=[lineNumber[m],Math.abs(S)];
+                                }
+                                i+=5;
+                                S=0;
+                                m++;
+                            }
+                            else {
+                                i+=2;
+                            }
+                        }
+                    }
+                }
+                function processAreaData(PointsArea,lastPointsArea) {
+                    var N=PointsArea.length;
+                    if(lastPointsArea.length==0) {
+                        for(var i=0;i<N-1;) {
+                            if(PointsArea[i][0]!=PointsArea[i+1][0]) {
+                                lastPointsArea.push(["城市"+PointsArea[i][0],parseInt(PointsArea[i][1])+"平方米"]);
+                                i++;
+                            }
+                            else {
+                                var S=0;
+                                var tempS=PointsArea[i][1]+PointsArea[i+1][1];
+                                S+=tempS;
+                                while(1) {
+                                    if((i+1)==N-1) {
+                                        lastPointsArea.push(["城市"+PointsArea[N-1][0],parseInt(S)+"平方米"]);
+                                        return 0;
+                                    }
+                                    i++;
+                                    if(PointsArea[i][0]!=PointsArea[i+1][0]) {
+                                        lastPointsArea.push(["城市"+PointsArea[i][0],parseInt(S)+"平方米"]);
+                                        i++;
+                                        break;
+                                    }
+                                    else {
+                                        S+=PointsArea[i+1][1];
+                                    }
+                                }
+                            }  
+                        }
+                        lastPointsArea.push(["城市"+PointsArea[N-1][0],parseInt(PointsArea[N-1][1])+"平方米"]);
+                    }
+                }
+                function showArea(canvasId,lastPointsArea) {
+                    var N=lastPointsArea.length;
+                    var cxt1=canvasId.getContext("2d");
+                    if(canvasId==canvas1) {
+                        alert("请在浏览器控制台（Console）中输入 lastMercatorPointsArea; 之后按回车键来查看面积信息。");
+                    }
+                    else {
+                        alert("请在浏览器控制台（Console）中输入 lastGCSPointsArea; 之后按回车键来查看面积信息。");
+                    }
+                }
+            </script>
+        </body>
+</html>

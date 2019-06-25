@@ -2,8 +2,9 @@
 <html>
 <head>
     <title>
-        Ê¸Á¿Êı¾İÕ¤¸ñ»¯
+        çŸ¢é‡æ•°æ®æ …æ ¼åŒ–
     </title>
+    <meta charset="utf-8">
     <style>
         .result {
             margin-left: 10px;
@@ -13,7 +14,7 @@
             overflow: auto;
             margin-top: 5px;
             padding: 10px;
-            font-family: ËÎÌå;
+            font-family: å®‹ä½“;
             font-size: 15px;
         }
         .row {
@@ -27,54 +28,54 @@
     </style>
 </head>
 <body>
-        <div style="font-size:15px;font-family:ËÎÌå;display:flex;flex-direction:row;margin-top:10px;margin-left:2%;" >
+        <div style="font-size:15px;font-family:å®‹ä½“;display:flex;flex-direction:row;margin-top:10px;margin-left:2%;" >
            <div>
-                <strong>>>ÇëÑ¡Ôñgen¸ñÊ½ÎÄ¼ş£º</strong>
+                <strong>>>è¯·é€‰æ‹©genæ ¼å¼æ–‡ä»¶ï¼š</strong>
                 <input id="File" type="file" multiple="mutifile" />
            </div>
            <div style="margin-left:-5%;">
-                <button type="button" onclick="get() ">¹¹½¨¶à±ßĞÎ</button>
+                <button type="button" onclick="get() ">æ„å»ºå¤šè¾¹å½¢</button>
             </div>
             <div style="margin-left:2%;">
-                <button  type="button" onclick="ClearCanvas() ">Çå³ı</button>
+                <button  type="button" onclick="ClearCanvas() ">æ¸…é™¤</button>
             </div>
-            <div style="margin-left:2%;margin-top:5px;font-size:15px;font-family:ËÎÌå;color:red">
-                ×¢£ºÈôÒªÖØĞÂÑ¡ÔñÎÄ¼ş£¬ÇëÏÈË¢ĞÂÕû¸ö½çÃæ
+            <div style="margin-left:2%;margin-top:5px;font-size:15px;font-family:å®‹ä½“;color:red">
+                æ³¨ï¼šè‹¥è¦é‡æ–°é€‰æ‹©æ–‡ä»¶ï¼Œè¯·å…ˆåˆ·æ–°æ•´ä¸ªç•Œé¢
             </div>
         </div>
    <div style="margin-top:2vh;width:96vw;margin-left:2vw;border:1px solid black;  opacity:0.5 ; "></div>
   
   <div class="row" style="  width: 1250px;">
         <div class="column" style=" width: 350px;">
-            <div style="margin-top:2vh;margin-left:2vw;font-size:15px;font-family:ËÎÌå;">Ô­Ê¼¶à±ßĞÎÍ¼ÏñÎª£º</div>
+            <div style="margin-top:2vh;margin-left:2vw;font-size:15px;font-family:å®‹ä½“;">åŸå§‹å¤šè¾¹å½¢å›¾åƒä¸ºï¼š</div>
             <canvas id="canvas1" style="border:1px solid lightgray;margin-top:1%;margin-left:2vw;"></canvas>
-            <div style="margin-top:2vh;margin-left:2vw;font-size:15px;font-family:ËÎÌå;">Ê¸Á¿×ªÕ¤¸ñ½á¹ûÎª£º</div>
+            <div style="margin-top:2vh;margin-left:2vw;font-size:15px;font-family:å®‹ä½“;">çŸ¢é‡è½¬æ …æ ¼ç»“æœä¸ºï¼š</div>
             <canvas id="canvas2" style="border:1px solid lightgray;margin-top:1%;margin-left:2vw;"></canvas>
         </div>
 
         <div style="width:1px;height:96vh;background-color:black;opacity:0.5 ;margin-left:2vw;"></div>
 
         <div class="column" style="margin-left:1vw;">
-            <div style="margin-top:2vh;margin-left:1vw;font-size:15px;font-family:ËÎÌå;">×ó×ªËã·¨Íê³Éºó½á¹ûÎª£º</div>
-            <div class="result" id="node">¢Ù½áµã±í£º
+            <div style="margin-top:2vh;margin-left:1vw;font-size:15px;font-family:å®‹ä½“;">å·¦è½¬ç®—æ³•å®Œæˆåç»“æœä¸ºï¼š</div>
+            <div class="result" id="node">â‘ ç»“ç‚¹è¡¨ï¼š
             </div>
-            <div class="result" id="nodearc">¢Ü½áµã-»¡¶Î±í£º
-            </div>
-        </div>
-
-        <div class="column">
-            <div style="margin-top:2vh;margin-left:2vw;font-size:15px;font-family:ËÎÌå;visibility:hidden;">halou</div>
-            <div class="result" id="arcnode">¢Ú»¡¶Î-½áµã±í£º
-            </div>
-            <div class="result" id="polyarc">¢İ¶à±ßĞÎ-»¡¶Î±í£º
+            <div class="result" id="nodearc">â‘£ç»“ç‚¹-å¼§æ®µè¡¨ï¼š
             </div>
         </div>
 
         <div class="column">
-            <div style="margin-top:2vh;margin-left:2vw;font-size:15px;font-family:ËÎÌå;visibility:hidden;">halou</div>
-            <div class="result" id="arcpoly">¢Û»¡¶Î-¶à±ßĞÎ±í£º
+            <div style="margin-top:2vh;margin-left:2vw;font-size:15px;font-family:å®‹ä½“;visibility:hidden;">halou</div>
+            <div class="result" id="arcnode">â‘¡å¼§æ®µ-ç»“ç‚¹è¡¨ï¼š
             </div>
-            <div class="result" id="island">¢Şµº¹ØÏµ±í£º
+            <div class="result" id="polyarc">â‘¤å¤šè¾¹å½¢-å¼§æ®µè¡¨ï¼š
+            </div>
+        </div>
+
+        <div class="column">
+            <div style="margin-top:2vh;margin-left:2vw;font-size:15px;font-family:å®‹ä½“;visibility:hidden;">halou</div>
+            <div class="result" id="arcpoly">â‘¢å¼§æ®µ-å¤šè¾¹å½¢è¡¨ï¼š
+            </div>
+            <div class="result" id="island">â‘¥å²›å…³ç³»è¡¨ï¼š
             </div>
         </div>
     </div>
@@ -89,19 +90,19 @@
         canvas2.width = 310;
         canvas2.height = 200;
         var times = 1.6;
-        var Node = [];//½áµã±í
-        var allpoints = [];//´æ´¢ËùÓĞµÄ½áµã
-        var NodeArc = [];//½áµã-»¡¶Î±í
-        var ArcNode = [];//»¡¶Î-½áµã±í
+        var Node = [];//ç»“ç‚¹è¡¨
+        var allpoints = [];//å­˜å‚¨æ‰€æœ‰çš„ç»“ç‚¹
+        var NodeArc = [];//ç»“ç‚¹-å¼§æ®µè¡¨
+        var ArcNode = [];//å¼§æ®µ-ç»“ç‚¹è¡¨
         var ArcNodefinal = [];
-        var PolygonArc = [];//¶à±ßĞÎ-»¡¶Î±í
-        var PolygonArcTemp = [];//ÁÙÊ±¶à±ßĞÎ-»¡¶Î±íÓÃÓÚ´æ´¢µã±ãÓÚÅĞ¶Ïµº¼ÆËãÃæ»ı
-        var ArcPoly = [];//»¡¶Î-¶à±ßĞÎ±í
-        var border = {};//ÍâÎ§¶à±ßĞÎ
+        var PolygonArc = [];//å¤šè¾¹å½¢-å¼§æ®µè¡¨
+        var PolygonArcTemp = [];//ä¸´æ—¶å¤šè¾¹å½¢-å¼§æ®µè¡¨ç”¨äºå­˜å‚¨ç‚¹ä¾¿äºåˆ¤æ–­å²›è®¡ç®—é¢ç§¯
+        var ArcPoly = [];//å¼§æ®µ-å¤šè¾¹å½¢è¡¨
+        var border = {};//å¤–å›´å¤šè¾¹å½¢
         var island = [];
         var arcpolytemp = [];
         var arcpolyfinal = [];
-        // ´æ´¢Õ¤¸ñÊı¾İµÄÊı×é50*50£¬³õÊ¼»¯ÆäÖĞµÄÊıÖµ¾ùÎª0
+        // å­˜å‚¨æ …æ ¼æ•°æ®çš„æ•°ç»„50*50ï¼Œåˆå§‹åŒ–å…¶ä¸­çš„æ•°å€¼å‡ä¸º0
         var grid = new Array();
         for (var i = 0; i < 250; i++) {
             grid[i] = new Array();
@@ -109,19 +110,19 @@
                 grid[i][j] = 0;
             }
         }
-        //¶ÁÈ¡ÎÄ¼ş
+        //è¯»å–æ–‡ä»¶
         function get() {
             var files = document.getElementById('File').files;
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 var reader = new FileReader();
-                reader.readAsText(file);//ÒÔÎÄ±¾ĞÎÊ½¶ÁÈ¡ÎÄ¼ş
-                //³É¹¦¶ÁÈ¡
+                reader.readAsText(file);//ä»¥æ–‡æœ¬å½¢å¼è¯»å–æ–‡ä»¶
+                //æˆåŠŸè¯»å–
                 reader.onload = function (e) {
-                    record = this.result;//¶ÁÈ¡ÎÄ¼ş
-                    draw(record);//»æÖÆ¸ÃÎÄ¼şÖĞ°üº¬µÄÄÚÈİ£¬²¢¹¹½¨½áµã±í£¬½áµã»¡¶Î±í£¬»¡¶Î½áµã±í
+                    record = this.result;//è¯»å–æ–‡ä»¶
+                    draw(record);//ç»˜åˆ¶è¯¥æ–‡ä»¶ä¸­åŒ…å«çš„å†…å®¹ï¼Œå¹¶æ„å»ºç»“ç‚¹è¡¨ï¼Œç»“ç‚¹å¼§æ®µè¡¨ï¼Œå¼§æ®µç»“ç‚¹è¡¨
                     drawpoint();
-                    SortNodeArc();//½«½áµã»¡¶Î±íÖĞµÄÃ¿¸ö½áµã¶ÔÓ¦µÄ»¡¶Î°´½Ç¶ÈµÄ´óĞ¡ÅÅĞò£¬ÒÔ±ã¹¹½¨×ó×ªËã·¨
+                    SortNodeArc();//å°†ç»“ç‚¹å¼§æ®µè¡¨ä¸­çš„æ¯ä¸ªç»“ç‚¹å¯¹åº”çš„å¼§æ®µæŒ‰è§’åº¦çš„å¤§å°æ’åºï¼Œä»¥ä¾¿æ„å»ºå·¦è½¬ç®—æ³•
                     LeftTurnAlgorithm();
                     CreatePolygonArc();
                     judgeisland();
@@ -132,7 +133,7 @@
         }
       
         function convertTogrid() {
-            //´¦ÀíÊı¾İ£¬´´½¨½á¹¹ÆäÖĞ°üº¬ËùÓĞ±ßµÄ×óÓÒ¶à±ßĞÎ±àºÅ£¨º¬×îÍâ±ßµÄ¶à±ßĞÎ£©£¬Ã¿Ìõ±ßµÄ×ø±êµã
+            //å¤„ç†æ•°æ®ï¼Œåˆ›å»ºç»“æ„å…¶ä¸­åŒ…å«æ‰€æœ‰è¾¹çš„å·¦å³å¤šè¾¹å½¢ç¼–å·ï¼ˆå«æœ€å¤–è¾¹çš„å¤šè¾¹å½¢ï¼‰ï¼Œæ¯æ¡è¾¹çš„åæ ‡ç‚¹
             for (var i = 0; i < arcpolytemp.length; i++) {
                 for (var j = 0; j < Node.length; j++) {
                     if (arcpolytemp[i].start == j) {
@@ -189,12 +190,12 @@
                 if (arcpolytemp[i].left == border.id) {
                     arcpolytemp[i].left = -1;
                 }
-                // ¶Ô×îÍâÎ§µÄ¶à±ßĞÎ×öÌØÊâ´¦Àí£¬ÆäÖµÎª-1
+                // å¯¹æœ€å¤–å›´çš„å¤šè¾¹å½¢åšç‰¹æ®Šå¤„ç†ï¼Œå…¶å€¼ä¸º-1
                 if (arcpolytemp[i].right == border.id) {
                     arcpolytemp[i].right = -1;
                 }
             }
-            //½«Ô­±¾¶à±ßĞÎÅÅ³ıµô×îÍâ½çµÄ¶à±ßĞÎÖ®ºóµÄÆäËû¶à±ßĞÎµÄ¶à±ßĞÎ±àºÅ¼ÓÒÔµ÷Õû
+            //å°†åŸæœ¬å¤šè¾¹å½¢æ’é™¤æ‰æœ€å¤–ç•Œçš„å¤šè¾¹å½¢ä¹‹åçš„å…¶ä»–å¤šè¾¹å½¢çš„å¤šè¾¹å½¢ç¼–å·åŠ ä»¥è°ƒæ•´
             for (var i = 0; i < arcpolytemp.length; i++) {
                 if (arcpolytemp[i].left > border.id) {
                     arcpolytemp[i].left = arcpolytemp[i].left - 1;
@@ -203,7 +204,7 @@
                     arcpolytemp[i].right = arcpolytemp[i].right - 1;
                 }
             }
-            // ÏÈ½«X,YµãµÄ×ø±ê×ª»»ÎªÕ¤¸ñËùÔÚµÄĞĞÁĞºÅ,Ğ¡Êı²¿·Ö²ÉÓÃ½Ø¶ÏµÄ·½Ê½
+            // å…ˆå°†X,Yç‚¹çš„åæ ‡è½¬æ¢ä¸ºæ …æ ¼æ‰€åœ¨çš„è¡Œåˆ—å·,å°æ•°éƒ¨åˆ†é‡‡ç”¨æˆªæ–­çš„æ–¹å¼
             for (var i = 0; i < arcpolytemp.length; i++) {
                 arcpolytemp[i].startpoint[0] = Math.trunc(arcpolytemp[i].startpoint[0]);
                 arcpolytemp[i].startpoint[1] = Math.trunc(arcpolytemp[i].startpoint[1]);
@@ -214,14 +215,14 @@
                     arcpolytemp[i].points[j][1] = Math.trunc(arcpolytemp[i].points[j][1]);
                 }
             }
-            //ÒÀ´ÎÉ¨Ãè¸÷±ß£¬ÅĞ¶Ïµ±±ß½ç»¡¶ÎÉÏĞĞÊ±£¬¸Ã»¡¶ÎÓë×óÍ¼¿òÖ®¼äÕ¤¸ñÔö¼ÓÒ»¸öÖµ£¨×ó¶à±ßĞÎ¼õÈ¥ÓÒ¶à±ßĞÎ£©
-            // µ±±ß½ç»¡¶ÎÏÂĞĞÊ±£¬¸Ã»¡¶ÎÓë×óÍ¼¿òÖ®¼äµÄÕ¤¸ñÔö¼ÓÒ»¸öÖµ£¨ÓÒ¶à±ßĞÎ±àºÅ¼õÈ¥×ó¶à±ßĞÎ±àºÅ£©
+            //ä¾æ¬¡æ‰«æå„è¾¹ï¼Œåˆ¤æ–­å½“è¾¹ç•Œå¼§æ®µä¸Šè¡Œæ—¶ï¼Œè¯¥å¼§æ®µä¸å·¦å›¾æ¡†ä¹‹é—´æ …æ ¼å¢åŠ ä¸€ä¸ªå€¼ï¼ˆå·¦å¤šè¾¹å½¢å‡å»å³å¤šè¾¹å½¢ï¼‰
+            // å½“è¾¹ç•Œå¼§æ®µä¸‹è¡Œæ—¶ï¼Œè¯¥å¼§æ®µä¸å·¦å›¾æ¡†ä¹‹é—´çš„æ …æ ¼å¢åŠ ä¸€ä¸ªå€¼ï¼ˆå³å¤šè¾¹å½¢ç¼–å·å‡å»å·¦å¤šè¾¹å½¢ç¼–å·ï¼‰
             for (var i = 0; i < arcpolytemp.length; i++) {
                 for (var j = 0; j < arcpolytemp[i].points.length - 1; j++) {
-                    if (arcpolytemp[i].points[j][1] - arcpolytemp[i].points[j + 1][1] > 0) {//ÏÂĞĞ
+                    if (arcpolytemp[i].points[j][1] - arcpolytemp[i].points[j + 1][1] > 0) {//ä¸‹è¡Œ
                         var value = (arcpolytemp[i].right + 1) - (arcpolytemp[i].left + 1);
                     }
-                    else if (arcpolytemp[i].points[j][1] - arcpolytemp[i].points[j + 1][1] < 0) {//ÉÏĞĞ
+                    else if (arcpolytemp[i].points[j][1] - arcpolytemp[i].points[j + 1][1] < 0) {//ä¸Šè¡Œ
                         var value = (arcpolytemp[i].left + 1) - (arcpolytemp[i].right + 1);
                     }
                     else {
@@ -234,12 +235,12 @@
                     var dy = arcpolytemp[i].points[j + 1][1] - arcpolytemp[i].points[j][1];
                     var dx = arcpolytemp[i].points[j + 1][0] - arcpolytemp[i].points[j][0];
                     var max, xincre, yincre;
-                    //ÅĞ¶ÏĞ±ÂÊÒÔÅĞ¶ÏÏÂÒ»¸öµãµÄ×ø±ê£¬ÀûÓÃÊıÖµÎ¢·Ö·¨
+                    //åˆ¤æ–­æ–œç‡ä»¥åˆ¤æ–­ä¸‹ä¸€ä¸ªç‚¹çš„åæ ‡ï¼Œåˆ©ç”¨æ•°å€¼å¾®åˆ†æ³•
                     if (Math.abs(dx) > Math.abs(dy)) {
-                        max = Math.abs(dx);//kÊôÓÚ-1µ½1µÄÇé¿ö
+                        max = Math.abs(dx);//kå±äº-1åˆ°1çš„æƒ…å†µ
                     }
                     else {
-                        max = Math.abs(dy);//k<-1»òÕßk>1
+                        max = Math.abs(dy);//k<-1æˆ–è€…k>1
                     }
                     xincre = dx / max;
                     yincre = dy / max;
@@ -261,7 +262,7 @@
                     }
                 }
             }
-            // ¸ù¾İµÃµ½µÄ¶şÎ¬Êı×é½øĞĞÌî³ä£¬±éÀúÕû¸öÊı×é£¬ÈôÊıÖµÎª0£¬Ôò²»ÓèÒÔÌî³ä£¬ÈôÊıÖµÎªÏàÓ¦µÄÖµÔòÌî³äÏàÓ¦µÄÑÕÉ«
+            // æ ¹æ®å¾—åˆ°çš„äºŒç»´æ•°ç»„è¿›è¡Œå¡«å……ï¼Œéå†æ•´ä¸ªæ•°ç»„ï¼Œè‹¥æ•°å€¼ä¸º0ï¼Œåˆ™ä¸äºˆä»¥å¡«å……ï¼Œè‹¥æ•°å€¼ä¸ºç›¸åº”çš„å€¼åˆ™å¡«å……ç›¸åº”çš„é¢œè‰²
             var color = ["yellow", "blue","orange","green", "pink",  "red","gray",  "lightblue", "black","lightgreen" ];
             for (var i = 0; i < grid.length; i++) {
                 for (var j = 0; j < grid[i].length; j++) {
@@ -276,7 +277,7 @@
         }
 
   function fillgrid(j, i, value) {
-            //¶Ô¸ÃĞĞµÄËùÓĞÏñËØÌî³ä
+            //å¯¹è¯¥è¡Œçš„æ‰€æœ‰åƒç´ å¡«å……
             for (; j >= 0; j--) {
                 grid[i][j] += value;
             }
@@ -289,7 +290,7 @@
                 var y0 = (canvas1.height - Node[i][1]) * times + 40 + 1;
                 ctext1.arc(x0, y0, 3, 0, Math.PI * 2, true);
                 ctext1.fill();
-                ctext1.font = "15px ËÎÌå";
+                ctext1.font = "15px å®‹ä½“";
                 var text = i + 1;
                 text = "N" + text.toString();
                 ctext1.fillStyle = "black";
@@ -313,7 +314,7 @@
                 text.innerHTML += "<br/>";
             }
             for (var i = 0; i < ArcNode.length; i++) {
-                //ÕÒµ½x,y¶ÔÓ¦µÄ±àºÅ
+                //æ‰¾åˆ°x,yå¯¹åº”çš„ç¼–å·
                 var startx = ArcNode[i].start[0];
                 var starty = ArcNode[i].start[1];
                 var endx = ArcNode[i].end[0];
@@ -384,11 +385,11 @@
                 text.innerHTML += ")";
                 text.innerHTML += "<br/>";
             }
-            //µºµÄ²¿·Ö
+            //å²›çš„éƒ¨åˆ†
             if (island.length != 0) {
                 text = document.getElementById('island');
                 text.innerHTML += "<br/>";
-                text.innerHTML += "µº" + "&nbsp" + "&nbsp" + "°üº¬ËüµÄ¶à±ßĞÎ" + "<br/>";
+                text.innerHTML += "å²›" + "&nbsp" + "&nbsp" + "åŒ…å«å®ƒçš„å¤šè¾¹å½¢" + "<br/>";
                 island.sort(function (a, b) {
                     return a[0] - b[0];
                 })
@@ -403,12 +404,12 @@
                 text = document.getElementById('island');
                 text.innerHTML += "<br/>";
                 text.innerHTML += "<br/>";
-                text.innerHTML += "´Ë¶à±ßĞÎ²»°üº¬µº";
+                text.innerHTML += "æ­¤å¤šè¾¹å½¢ä¸åŒ…å«å²›";
             }
-            //»¡¶Î-¶à±ßĞÎ±í
+            //å¼§æ®µ-å¤šè¾¹å½¢è¡¨
             text = document.getElementById('arcpoly');
             text.innerHTML += "<br/>";
-            text.innerHTML += "Arc" + "&nbsp" + "&nbsp" + "ÓÒ¶à±ßĞÎ" + "&nbsp" + "&nbsp" + "×ó¶à±ßĞÎ" + "<br/>";
+            text.innerHTML += "Arc" + "&nbsp" + "&nbsp" + "å³å¤šè¾¹å½¢" + "&nbsp" + "&nbsp" + "å·¦å¤šè¾¹å½¢" + "<br/>";
             for (var i = 0; i < PolygonArc.length; i++) {
                 for (var j = 0; j < PolygonArc[i].arc.length; j = j + 2) {
                     text.innerHTML += "N" + (PolygonArc[i].arc[j] + 1) + "N" + (PolygonArc[i].arc[j + 1] + 1);
@@ -438,7 +439,7 @@
             }
         }
 
-        //½«½áµã»¡¶Î±íÖĞµÄÃ¿¸ö½áµã¶ÔÓ¦µÄ»¡¶Î°´½Ç¶ÈµÄ´óĞ¡ÅÅĞò£¬ÒÔ±ã¹¹½¨×ó×ªËã·¨
+        //å°†ç»“ç‚¹å¼§æ®µè¡¨ä¸­çš„æ¯ä¸ªç»“ç‚¹å¯¹åº”çš„å¼§æ®µæŒ‰è§’åº¦çš„å¤§å°æ’åºï¼Œä»¥ä¾¿æ„å»ºå·¦è½¬ç®—æ³•
         function SortNodeArc() {
             for (var i = 0; i < NodeArc.length; i++) {
                 var lines = [];
@@ -451,7 +452,7 @@
                             id: ArcNode[index].id,
                             start: pointTemp,
                             next: ArcNode[index].points[1],
-                            angle: 0//½Ç¶È
+                            angle: 0//è§’åº¦
                         }
                         lines.push(lineTemp);
                     }
@@ -460,12 +461,12 @@
                             id: ArcNode[index].id,
                             start: pointTemp,
                             next: ArcNode[index].points[ArcNode[index].points.length - 2],
-                            angle: 0//½Ç¶È
+                            angle: 0//è§’åº¦
                         }
                         lines.push(lineTemp);
                     }
                 }
-                //°´½Ç¶È´óĞ¡ÒÔ´ËÅÅĞò
+                //æŒ‰è§’åº¦å¤§å°ä»¥æ­¤æ’åº
                 for (var k = 0; k < lines.length; k++) {
                     var xtemp = lines[k].next[0] - lines[k].start[0];
                     var ytemp = lines[k].next[1] - lines[k].start[1];
@@ -484,7 +485,7 @@
                 }
                 lines.sort(function (a, b) {
                     return a.angle - b.angle;
-                });//½«¸÷»¡¶Î°´½Ç¶ÈÅÅĞò
+                });//å°†å„å¼§æ®µæŒ‰è§’åº¦æ’åº
                 NodeArc[i].arc = [];
                 for (var t = 0; t < lines.length; t++) {
                     NodeArc[i].arc.push(lines[t].id);
@@ -495,13 +496,13 @@
         function LeftTurnAlgorithm() {
             var finalTemp = [];
             for (var i = 0; i < NodeArc.length; i++) {
-                finalTemp = [];//Ò»¸ö½áµãÑ°ÕÒÍê±Ï¿ªÊ¼Ñ°ÕÒÏÂÒ»¸ö½áµãµÄÂ·¾¶Ö®Ç°ÏÈÖÃ¿Õ
-                var p = NodeArc[i].point;//Æğµã
+                finalTemp = [];//ä¸€ä¸ªç»“ç‚¹å¯»æ‰¾å®Œæ¯•å¼€å§‹å¯»æ‰¾ä¸‹ä¸€ä¸ªç»“ç‚¹çš„è·¯å¾„ä¹‹å‰å…ˆç½®ç©º
+                var p = NodeArc[i].point;//èµ·ç‚¹
                 var nextpoint = [];
-                //ÒÔµÚÒ»¸ö½áµã×÷ÎªÆğÊ¼½áµã
+                //ä»¥ç¬¬ä¸€ä¸ªç»“ç‚¹ä½œä¸ºèµ·å§‹ç»“ç‚¹
                 for (var j = 0; j < NodeArc[i].arc.length; j++) {
-                    var index = NodeArc[i].arc[j];//index ±íÊ¾»¡¶ÎµÄ±àºÅ
-                    //Èô¸Ã½áµãÎª»¡¶ÎµÄÆğµã£¬ÇÒ¸Ã»¡¶ÎÕıÏòÃ»ÓĞ±»±éÀú¹ı£¬ÔòÏÂÒ»¸ö½áµãÔòÎª¸Ã»¡¶ÎµÄÖÕµã£¬ÕıÏò±éÀú¸Ã»¡¶Î
+                    var index = NodeArc[i].arc[j];//index è¡¨ç¤ºå¼§æ®µçš„ç¼–å·
+                    //è‹¥è¯¥ç»“ç‚¹ä¸ºå¼§æ®µçš„èµ·ç‚¹ï¼Œä¸”è¯¥å¼§æ®µæ­£å‘æ²¡æœ‰è¢«éå†è¿‡ï¼Œåˆ™ä¸‹ä¸€ä¸ªç»“ç‚¹åˆ™ä¸ºè¯¥å¼§æ®µçš„ç»ˆç‚¹ï¼Œæ­£å‘éå†è¯¥å¼§æ®µ
                     if (p[0] == ArcNode[index].start[0] && p[1] == ArcNode[index].start[1] && ArcNode[index].forward == false) {
                         nextpoint = ArcNode[index].end;
                         ArcNode[index].forward = true;
@@ -511,7 +512,7 @@
                         })
                         break;
                     }
-                    //Èô¸Ã½áµãÎª»¡¶ÎµÄÖÕµã£¬ÇÒ¸Ã»¡¶ÎÄæÏòÃ»ÓĞ±»±éÀú£¬Ôò»¡¶ÎµÄÆğµãÔòÎªÏÂÒ»¸ö½áµã
+                    //è‹¥è¯¥ç»“ç‚¹ä¸ºå¼§æ®µçš„ç»ˆç‚¹ï¼Œä¸”è¯¥å¼§æ®µé€†å‘æ²¡æœ‰è¢«éå†ï¼Œåˆ™å¼§æ®µçš„èµ·ç‚¹åˆ™ä¸ºä¸‹ä¸€ä¸ªç»“ç‚¹
                     else if (p[0] == ArcNode[index].end[0] && p[1] == ArcNode[index].end[1] && ArcNode[index].reverse == false) {
                         nextpoint = ArcNode[index].start;
                         ArcNode[index].reverse = true;
@@ -522,7 +523,7 @@
                         break;
                     }
                 }
-                if (j == NodeArc[i].arc.length) {//ÈôÉÏÊöÁ½ÖÖÇé¿ö¾ù²»Âú×ã£¬Î¨Ò»µÄ¿ÉÄÜÊÇËùÓĞµÄ»¡¶ÎÕıÏòºÍÄæÏò¾ù±»±éÀúÍê£¬´ËÊ±ÔòĞèÑ°ÕÒÏÂÒ»¸ö½áµã×÷ÎªÆğÊ¼½áµã
+                if (j == NodeArc[i].arc.length) {//è‹¥ä¸Šè¿°ä¸¤ç§æƒ…å†µå‡ä¸æ»¡è¶³ï¼Œå”¯ä¸€çš„å¯èƒ½æ˜¯æ‰€æœ‰çš„å¼§æ®µæ­£å‘å’Œé€†å‘å‡è¢«éå†å®Œï¼Œæ­¤æ—¶åˆ™éœ€å¯»æ‰¾ä¸‹ä¸€ä¸ªç»“ç‚¹ä½œä¸ºèµ·å§‹ç»“ç‚¹
                     continue;
                 }
                 var nextindex;
@@ -534,7 +535,7 @@
                             }
                         }
                         for (var k = 0; k < NodeArc[t].arc.length; k++) {
-                            if (NodeArc[t].arc[k] == index) {//µÈÓÚÉÏÒ»Ìõ»¡¶Î
+                            if (NodeArc[t].arc[k] == index) {//ç­‰äºä¸Šä¸€æ¡å¼§æ®µ
                                 nextindex = (k + 1) % NodeArc[t].arc.length;
                                 break;
                             }
@@ -548,7 +549,7 @@
                                 direction: "forward"
                             })
                         }
-                        //Èô¸Ã½áµãÎª»¡¶ÎµÄÖÕµã£¬ÇÒ¸Ã»¡¶ÎÄæÏòÃ»ÓĞ±»±éÀú£¬Ôò»¡¶ÎµÄÆğµãÔòÎªÏÂÒ»¸ö½áµã
+                        //è‹¥è¯¥ç»“ç‚¹ä¸ºå¼§æ®µçš„ç»ˆç‚¹ï¼Œä¸”è¯¥å¼§æ®µé€†å‘æ²¡æœ‰è¢«éå†ï¼Œåˆ™å¼§æ®µçš„èµ·ç‚¹åˆ™ä¸ºä¸‹ä¸€ä¸ªç»“ç‚¹
                         else if (nextpoint[0] == ArcNode[index].end[0] && nextpoint[1] == ArcNode[index].end[1] && ArcNode[index].reverse == false) {
                             nextpoint = ArcNode[index].start;
                             ArcNode[index].reverse = true;
@@ -558,11 +559,11 @@
                             })
                         }
                     }
-                    //Èônextpoint==pÔòÖ¤Ã÷»Øµ½ÁËÆğµã£¬´ËÊ±Ò»¸ö¶à±ßĞÎ¹¹½¨Íê±Ï
+                    //è‹¥nextpoint==påˆ™è¯æ˜å›åˆ°äº†èµ·ç‚¹ï¼Œæ­¤æ—¶ä¸€ä¸ªå¤šè¾¹å½¢æ„å»ºå®Œæ¯•
                     PolygonArc.push(finalTemp);
                     var final = finalTemp[finalTemp.length - 1].id;
                     finalTemp = [];
-                    //Èô×îºóÒ»Ìõ»¡¶ÎµÄÕıÏòÄæÏò¾ù±»±éÀú£¬Ôò¿ªÊ¼Ñ°ÕÒÏÂÒ»¸ö½áµã×÷ÎªÆğÊ¼½áµã
+                    //è‹¥æœ€åä¸€æ¡å¼§æ®µçš„æ­£å‘é€†å‘å‡è¢«éå†ï¼Œåˆ™å¼€å§‹å¯»æ‰¾ä¸‹ä¸€ä¸ªç»“ç‚¹ä½œä¸ºèµ·å§‹ç»“ç‚¹
                     if (ArcNode[final].forward == true && ArcNode[final].reverse == true) {
                         break;
                     }
@@ -637,7 +638,7 @@
         }      
 
 
-        //ÅĞ¶ÏÒ»¸öµãÊÇ·ñÔÚ¶à±ßĞÎÄÚ
+        //åˆ¤æ–­ä¸€ä¸ªç‚¹æ˜¯å¦åœ¨å¤šè¾¹å½¢å†…
         function pointIspoly(point, poly) {
             var px = [], py = [];
             for (var i = 0; i < poly.length; i++) {
@@ -650,7 +651,7 @@
             py.sort(function (a, b) {
                 return a - b;
             })
-            //Ê×ÏÈÅĞ¶ÏµãÊÇ·ñÎ»ÓÚ¶à±ßĞÎµÄ×îĞ¡Íâ½Ó¾ØĞÎÖ®ÄÚ£¬Èô²»Âú×ãÔòÎŞĞè½øĞĞÏÂÃæµÄÅĞ¶Ï
+            //é¦–å…ˆåˆ¤æ–­ç‚¹æ˜¯å¦ä½äºå¤šè¾¹å½¢çš„æœ€å°å¤–æ¥çŸ©å½¢ä¹‹å†…ï¼Œè‹¥ä¸æ»¡è¶³åˆ™æ— éœ€è¿›è¡Œä¸‹é¢çš„åˆ¤æ–­
             var maxx = px[px.length - 1];
             var minx = px[0];
             var maxy = py[py.length - 1];
@@ -659,7 +660,7 @@
                 return false;
             }
             var num = 0;
-            var pointtemp = [maxx + 100, point[1]];//Ïàµ±ÓÚÉäÏß
+            var pointtemp = [maxx + 100, point[1]];//ç›¸å½“äºå°„çº¿
             for (var i = 0; i < poly.length - 1; i++) {
                 var point1 = poly[i];
                 var point2 = poly[i + 1];
@@ -668,14 +669,14 @@
                     num++;
                 }
             }
-            //ÉäÏßÓë¶à±ßĞÎµÄ½»µãÎªÅ¼Êı¸öÔòÔÚ¶à±ßĞÎÄÚ
+            //å°„çº¿ä¸å¤šè¾¹å½¢çš„äº¤ç‚¹ä¸ºå¶æ•°ä¸ªåˆ™åœ¨å¤šè¾¹å½¢å†…
             if ((num % 2) != 0) {
                 return true;
             }
-            //ÈôÎªÆæÊı¸öÔò²»ÔÙ¶à±ßĞÎÄÚ
+            //è‹¥ä¸ºå¥‡æ•°ä¸ªåˆ™ä¸å†å¤šè¾¹å½¢å†…
             return false;
         }
-        //¼ÆËã²æ»ıµÄ¹«Ê½
+        //è®¡ç®—å‰ç§¯çš„å…¬å¼
         function mult(a, b, c) {
             return (a[0] - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (a[1] - c[1]);
         }
@@ -689,7 +690,7 @@
         }
         function judgeisland() {
             var areaTemp = [];
-            //ÒÔ´Ë¼ÆËãËùÓĞ¶à±ßĞÎµÄÃæ»ı
+            //ä»¥æ­¤è®¡ç®—æ‰€æœ‰å¤šè¾¹å½¢çš„é¢ç§¯
             for (var i = 0; i < PolygonArcTemp.length; i++) {
                 var area = calculateArea(PolygonArcTemp[i]);
                 areaTemp.push({
@@ -697,13 +698,13 @@
                     area: area
                 })
             }
-            //½«¶à±ßĞÎµÄÃæ»ı°´´ÓĞ¡µ½´óÅÅĞò£¬ÆäÖĞÖµµÃ×¢ÒâµÄÊÇÍâ²¿¶à±ßĞÎµÄÃæ»ı×î´ó£¬ÇÒÎª¸ºÖµ
+            //å°†å¤šè¾¹å½¢çš„é¢ç§¯æŒ‰ä»å°åˆ°å¤§æ’åºï¼Œå…¶ä¸­å€¼å¾—æ³¨æ„çš„æ˜¯å¤–éƒ¨å¤šè¾¹å½¢çš„é¢ç§¯æœ€å¤§ï¼Œä¸”ä¸ºè´Ÿå€¼
             areaTemp.sort(function (a, b) {
                 return a.area - b.area;
             })
-            var islandtemp = [];//¸º¶à±ßĞÎ¼¯ºÏ£¨²»°üÀ¨ÍâÎ§¶à±ßĞÎ£©
-            var areaplus = [];//Õı¶à±ßĞÎ¼¯ºÏ
-            //ÅÅĞòÖ®ºóÃæ»ı×î´óµÄÒ»¶¨ÎªÍâ²¿¶à±ßĞÎ
+            var islandtemp = [];//è´Ÿå¤šè¾¹å½¢é›†åˆï¼ˆä¸åŒ…æ‹¬å¤–å›´å¤šè¾¹å½¢ï¼‰
+            var areaplus = [];//æ­£å¤šè¾¹å½¢é›†åˆ
+            //æ’åºä¹‹åé¢ç§¯æœ€å¤§çš„ä¸€å®šä¸ºå¤–éƒ¨å¤šè¾¹å½¢
             border = {
                 id: areaTemp[0].id,
                 points: PolygonArcTemp[areaTemp[0].id],
@@ -716,7 +717,7 @@
                             area: areaTemp[j].area
                         })
                     }
-                    break;//Ãæ»ı°´´ÓĞ¡µ½´óµÄË³ĞòÅÅÁĞ£¬ÈôÓĞÃæ»ı´óÓÚ0ÔòÖ®ºóµÄÃæ»ıÒ»¶¨´óÓÚ0
+                    break;//é¢ç§¯æŒ‰ä»å°åˆ°å¤§çš„é¡ºåºæ’åˆ—ï¼Œè‹¥æœ‰é¢ç§¯å¤§äº0åˆ™ä¹‹åçš„é¢ç§¯ä¸€å®šå¤§äº0
                 }
                 if (areaTemp[i].area < 0) {
                     islandtemp.push({
@@ -732,12 +733,12 @@
                 areaplus.sort(function (a, b) {
                     return a.id - b.id;
                 })
-                //ÒÀ´Î´ÓÕı¶à±ßĞÎÖĞ³é³öÒ»¸ö¶à±ßĞÎ£¬²¢±éÀúËùÓĞµÄ¸º¶à±ßĞÎ£¬ÅĞ¶ÏÕı¶à±ßĞÎÊÇ·ñ°üº¬¸Ã¸º¶à±ßĞÎ
+                //ä¾æ¬¡ä»æ­£å¤šè¾¹å½¢ä¸­æŠ½å‡ºä¸€ä¸ªå¤šè¾¹å½¢ï¼Œå¹¶éå†æ‰€æœ‰çš„è´Ÿå¤šè¾¹å½¢ï¼Œåˆ¤æ–­æ­£å¤šè¾¹å½¢æ˜¯å¦åŒ…å«è¯¥è´Ÿå¤šè¾¹å½¢
                 for (var i = 0; i < areaplus.length; i++) {
                     for (var j = 0; j < islandtemp.length; j++) {
-                        //Ïà½»µÄµÚÒ»¸öÌõ¼ş£ºÕı¶à±ßĞÎµÄÃæ»ı´óÓÚ¸º¶à±ßĞÎÃæ»ıµÄ¾ø¶ÔÖµ
+                        //ç›¸äº¤çš„ç¬¬ä¸€ä¸ªæ¡ä»¶ï¼šæ­£å¤šè¾¹å½¢çš„é¢ç§¯å¤§äºè´Ÿå¤šè¾¹å½¢é¢ç§¯çš„ç»å¯¹å€¼
                         if ((Math.abs(areaplus[i].area) - Math.abs(islandtemp[j].area)) > 0) {
-                            //Ïà½»µÄµÚ¶ş¸öÌõ¼ş£ºÕı¶à±ßĞÎÓë¸º¶à±ßĞÎµÄÍâ½Ó¾ØĞÎÏà½»
+                            //ç›¸äº¤çš„ç¬¬äºŒä¸ªæ¡ä»¶ï¼šæ­£å¤šè¾¹å½¢ä¸è´Ÿå¤šè¾¹å½¢çš„å¤–æ¥çŸ©å½¢ç›¸äº¤
                             var maxX1 = 0, maxY1 = 0, minX1 = 999, minY1 = 999;
                             var maxX2 = 0, maxY2 = 0, minX2 = 999, minY2 = 999;
                             for (var k = 0; k < PolygonArcTemp[areaplus[i].id].length; k++) {
@@ -772,10 +773,10 @@
                             var miny = Math.max(minY1, minY2);
                             var maxx = Math.min(maxX1, maxX2);
                             var maxy = Math.min(maxY1, maxY2);
-                            if ((minx > maxx || miny > maxy) != 1) {//Âú×ã¸ÃÌõ¼şÔòÁ½¸öÍâ½Ó¾ØĞÎÏà½»
+                            if ((minx > maxx || miny > maxy) != 1) {//æ»¡è¶³è¯¥æ¡ä»¶åˆ™ä¸¤ä¸ªå¤–æ¥çŸ©å½¢ç›¸äº¤
                                 var record = pointIspoly(PolygonArcTemp[islandtemp[j].id][0], PolygonArcTemp[areaplus[i].id]);
                                 if (record == true) {
-                                    //island´æ´¢µºµÄ¶à±ßĞÎid(ÊÇ¸ºÖµ)
+                                    //islandå­˜å‚¨å²›çš„å¤šè¾¹å½¢id(æ˜¯è´Ÿå€¼)
                                     island.push([islandtemp[j].id, areaplus[i].id])
                                 }
                             }
@@ -786,7 +787,7 @@
         }
 
 
-        //ÅĞ¶Ï½áµã-»¡¶Î±íÖĞÊÇ·ñÓĞ¸Ãpoint
+        //åˆ¤æ–­ç»“ç‚¹-å¼§æ®µè¡¨ä¸­æ˜¯å¦æœ‰è¯¥point
         function Check(temp, point) {
             for (var i = 0; i < temp.length; i++) {
                 if (temp[i].point[0] == point[0] && temp[i].point[1] == point[1]) {
@@ -796,80 +797,80 @@
             return -1;
         }
 
-        function draw(record)//»­µØÍ¼
+        function draw(record)//ç”»åœ°å›¾
         {
             var name = record.split('\r\n');
-            var start = false;//ÓÃÓÚÑ°ÕÒÆğµã,startÎªÕæÊ±±íÊ¾Æğµã
-            ctext1.lineWidth = 1;//ÉèÖÃ»­±ÊµÄ¿í¶ÈºÍÑÕÉ«
+            var start = false;//ç”¨äºå¯»æ‰¾èµ·ç‚¹,startä¸ºçœŸæ—¶è¡¨ç¤ºèµ·ç‚¹
+            ctext1.lineWidth = 1;//è®¾ç½®ç”»ç¬”çš„å®½åº¦å’Œé¢œè‰²
             ctext1.strokeStyle = "black";
-            //¿ªÊ¼¶ÁÈ¡ÎÄ¼ş
+            //å¼€å§‹è¯»å–æ–‡ä»¶
             var id = -1;
             for (var i = 0; i < name.length; i++) {
                 if (name[i] == 'END' && name[i - 1] != 'END') {
                     point = name[i - 1].split(',');
-                    point[0] = parseFloat(point[0]); // ×¢ÒâÊıÖµÀàĞÍµÄ×ª»»
+                    point[0] = parseFloat(point[0]); // æ³¨æ„æ•°å€¼ç±»å‹çš„è½¬æ¢
                     point[1] = parseFloat(point[1]);
                     templine.end = point;
                     ArcNode.push(templine);
                     ctext1.stroke();
-                    //ÈôÓöµ½¡®end¡¯Ôò½áÊø¸ÃÌõÏß¶ÎµÄ»æÖÆ£¬²¢ÇÒ½«startÖØÖÃÎªtrue
+                    //è‹¥é‡åˆ°â€˜endâ€™åˆ™ç»“æŸè¯¥æ¡çº¿æ®µçš„ç»˜åˆ¶ï¼Œå¹¶ä¸”å°†starté‡ç½®ä¸ºtrue
                     start = false;
                     var index = Check(NodeArc, point);
-                    if (index == -1) {//½áµã-»¡¶Î±íÖĞÃ»ÓĞ¸Ãµã
+                    if (index == -1) {//ç»“ç‚¹-å¼§æ®µè¡¨ä¸­æ²¡æœ‰è¯¥ç‚¹
                         Node.push(point);
                         var point = {
-                            id: NodeArc.length,//±àºÅ
-                            point: point,//½áµãµÄ×ø±ê
-                            arc: [id],//»¡¶ÎµÄidºÅ
+                            id: NodeArc.length,//ç¼–å·
+                            point: point,//ç»“ç‚¹çš„åæ ‡
+                            arc: [id],//å¼§æ®µçš„idå·
                         }
                         NodeArc.push(point);
                     }
                     else {
-                        NodeArc[index].arc.push(id);//Èç¹û¸Ã½áµãÒÑ¾­´æÔÚ£¬Ôò°Ñ¸Ã»¡¶Î¼ÓÈëarcÖĞ
+                        NodeArc[index].arc.push(id);//å¦‚æœè¯¥ç»“ç‚¹å·²ç»å­˜åœ¨ï¼Œåˆ™æŠŠè¯¥å¼§æ®µåŠ å…¥arcä¸­
                     }
                     continue;
                 }
-                var point = name[i].split(',');//×ø±êÖĞÈ¥³ı¡°£¬¡±³ÉÎªpointÊı×é
-                if (point.length < 2)//´ËÌõ¼şÅĞ¶ÏÊÇL1»¹ÊÇ×ø±ê¶Ô£¬L1¾­¹ısplitº¯Êı´¦Àíºó³¤¶ÈÎª1
+                var point = name[i].split(',');//åæ ‡ä¸­å»é™¤â€œï¼Œâ€æˆä¸ºpointæ•°ç»„
+                if (point.length < 2)//æ­¤æ¡ä»¶åˆ¤æ–­æ˜¯L1è¿˜æ˜¯åæ ‡å¯¹ï¼ŒL1ç»è¿‡splitå‡½æ•°å¤„ç†åé•¿åº¦ä¸º1
                 {
-                    start = true;//ÕÒµ½¡°L1¡±±íÃ÷ÕÒµ½ÁËÆğµã
+                    start = true;//æ‰¾åˆ°â€œL1â€è¡¨æ˜æ‰¾åˆ°äº†èµ·ç‚¹
                     id = parseInt(point[0]) - 1;
-                    var templine = {//»¡¶Î
-                        id: parseInt(point[0]) - 1,//id±àÂë
-                        start: null,//Æğµã
-                        end: null,//ÖÕµã
-                        points: [],//¸Ã»¡¶Î°üº¬µÄËùÓĞµã
+                    var templine = {//å¼§æ®µ
+                        id: parseInt(point[0]) - 1,//idç¼–ç 
+                        start: null,//èµ·ç‚¹
+                        end: null,//ç»ˆç‚¹
+                        points: [],//è¯¥å¼§æ®µåŒ…å«çš„æ‰€æœ‰ç‚¹
                         forward: false,
-                        reverse: false,//±íÊ¾¸Ã»¡¶ÎÕıÏòÓëÄæÏòÊÇ·ñ±»±éÀú
+                        reverse: false,//è¡¨ç¤ºè¯¥å¼§æ®µæ­£å‘ä¸é€†å‘æ˜¯å¦è¢«éå†
                     };
-                    continue;//¼ÌĞøÑ°ÕÒÆğÊ¼×ø±ê
+                    continue;//ç»§ç»­å¯»æ‰¾èµ·å§‹åæ ‡
                 }
-                if (start) {//ÈôstartÎªÕæÔò±íÃ÷ÎªÆğµã£¬ÓÃmoveTo()º¯Êı
-                    point[0] = parseFloat(point[0]); // ×¢ÒâÊıÖµÀàĞÍµÄ×ª»»
+                if (start) {//è‹¥startä¸ºçœŸåˆ™è¡¨æ˜ä¸ºèµ·ç‚¹ï¼Œç”¨moveTo()å‡½æ•°
+                    point[0] = parseFloat(point[0]); // æ³¨æ„æ•°å€¼ç±»å‹çš„è½¬æ¢
                     point[1] = parseFloat(point[1]);
                     var x0 = point[0] * times - 10;
                     var y0 = (canvas1.height - point[1]) * times + 40 + 1;
                     ctext1.beginPath();
                     ctext1.moveTo(x0, y0);
-                    start = false;//±íÊ¾ÒÑ¾­¹ıÁËÆğµãµã
+                    start = false;//è¡¨ç¤ºå·²ç»è¿‡äº†èµ·ç‚¹ç‚¹
                     templine.start = point;
-                    templine.points.push(point);//½«ÆğµãºÍµã¼ÓÈë»¡¶ÎÖĞ
+                    templine.points.push(point);//å°†èµ·ç‚¹å’Œç‚¹åŠ å…¥å¼§æ®µä¸­
                     var index = Check(NodeArc, point);
-                    if (index == -1) {//½áµã-»¡¶Î±íÖĞÃ»ÓĞ¸Ãµã
-                        Node.push(point);//½«¸Ãµã´æÈë½áµã±íÖĞ
+                    if (index == -1) {//ç»“ç‚¹-å¼§æ®µè¡¨ä¸­æ²¡æœ‰è¯¥ç‚¹
+                        Node.push(point);//å°†è¯¥ç‚¹å­˜å…¥ç»“ç‚¹è¡¨ä¸­
                         var point = {
-                            id: NodeArc.length,//±àºÅ
-                            point: point,//½áµãµÄ×ø±ê
-                            arc: [id],//»¡¶ÎµÄidºÅ
+                            id: NodeArc.length,//ç¼–å·
+                            point: point,//ç»“ç‚¹çš„åæ ‡
+                            arc: [id],//å¼§æ®µçš„idå·
                         }
                         NodeArc.push(point);
                     }
                     else {
-                        NodeArc[index].arc.push(id);//Èç¹û¸Ã½áµãÒÑ¾­´æÔÚ£¬Ôò°Ñ¸Ã»¡¶Î¼ÓÈëarcÖĞ
+                        NodeArc[index].arc.push(id);//å¦‚æœè¯¥ç»“ç‚¹å·²ç»å­˜åœ¨ï¼Œåˆ™æŠŠè¯¥å¼§æ®µåŠ å…¥arcä¸­
                     }
                 }
                 else {
-                    point[0] = parseFloat(point[0]); // ×¢ÒâÊıÖµÀàĞÍµÄ×ª»»
+                    point[0] = parseFloat(point[0]); // æ³¨æ„æ•°å€¼ç±»å‹çš„è½¬æ¢
                     point[1] = parseFloat(point[1]);
                     var x1 = point[0] * times - 10 + 1;
                     var y1 = (canvas1.height - point[1]) * times + 40 + 1;

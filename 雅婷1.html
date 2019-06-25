@@ -1,0 +1,92 @@
+
+李雅婷 2019/3/5 16:25:06
+<html>  
+    <head>  
+<meta charset="utf-8">
+        <title>名称编码</title>  
+    </head>  
+        <body>             
+            <input id="fileInput" type="file" onchange="processFiles()"/>
+            <br>
+            <canvas id="myCanvas" width="1000" height="1000" style="border:1px solid #c3c3c3">your browser does not support the canvas tag </canvas>
+           
+            <script>  
+                function processFiles(){
+                    var file=document.getElementById("fileInput").files[0];
+                    var reader=new FileReader();//FileReader将文件内容读入内存，通过一系列异步接口，可以在主线程中访问本地文件。
+                    reader.readAsText(file);//readAsText(file)异步按字符读取文件内容，结果用字符串形式表示
+                    reader.onload=function(e)//onload当读取操作成功完成时调用；e是事件，在firefox中只能在事件现场使用window.event，所以只有把event传给函数使用。
+                                                              //为了兼容FF和其它浏览器，一般会在函数里重新给e赋值：  e = window.event || e;也就是说，如果window.event存在，则该浏览器支持直接使用window.event，否在就是不支持，不支持就使用传进来的e。 
+
+                    {
+                        var str = this.result;//读取文本
+                        var number = new Array();
+                        number= digitalExtraction(str,number);//提取数字并存入数组
+                        draw(number);//画图
+                    }                    
+                }
+
+                //提取数字，并存入数组
+               function digitalExtraction(str,number){
+                    var heap= str.replace(/[^0-9.L]/ig,"A");   //Heap 则是随机分配内存，不定长度，存在内存分配和回收的问题 ；str.replace是把数字0-9换成A
+                    var numcharacter="";//存储数字字符
+                    var number =new Array();//提取数字数组
+                    var i=0;
+                    var flag=0;//heap字符串当前标记
+                    var n=0;//标识数字与字符转换位置
+                    var character=heap[flag];//获取字符串的一个字符
+                   // document.write(heap);
+                    while(character!=null){
+                        if(character=="L"){
+                             number[i++]=-1;
+                             flag+=2;
+                             character=heap[flag];
+                         }
+                        if(character!="A"){
+                            n=1;
+                            numcharacter+=character;
+                          }
+                        else{
+                            if(n){
+                                number[i++]=parseFloat(numcharacter);//如果参数字符串的第一个字符能被解析成为数字，parseFloat 将它的字符串参数解析成为浮点数并返回。如果在解析过程中遇到了正负号（+ 或 -）、数字 (0-9)、小数点，或者科学记数法中的指数（e 或 E）以外的字符，则它会忽略该字符以及之后的所有字符，返回当前已经解析到的浮点数。同时参数字符串首位的空白符会被忽略。
+                                                                                                 //如果参数字符串的第一个字符不能被解析成为数字，则 parseFloat 返回 NaN
+                                numcharacter="";
+                                n=0;
+                            }
+                        }
+                         character=heap[++flag];
+                    }                   
+                    return number;
+               }
+
+
+               function draw(number){
+                    var canvas=document.getElementById('myCanvas');   //<canvas> 标签定义图形，比如图表和其他图像，只是图形容器，必须使用脚本来绘制图形。
+                    var cxt=canvas.getContext('2d');    //Canvas.getContext(contextID)，参数 contextID 指定了在画布上绘制的类型。当前唯一的合法值是 "2d"，它指定了二维绘图，并且导致这个方法返回一个环境对象，该对象导出一个二维绘图 API。
+                    var n= number.length;
+                    number[n]=-1;
+                    var n= number.length; 
+                   var flag=0;
+                   var x= new Array();
+                   var y =new Array();
+                   var j=0;
+                    for(var i=1,j=0;i<n;i++)
+               {
+                        if(number[i]!=-1){
+                            x[j]=number[i]*10;
+                            y[j]=number[++i]*10;
+                            j++;
+                        }else{
+                            cxt.moveTo(x[0],y[0]);
+                            for(var k=1;k<j;k++){
+                                cxt.lineTo(x[k],y[k]);
+                            }
+                            cxt.stroke();
+                            j=0;
+                        }
+                    }                 
+               }
+            
+            </script>   
+        </body>  
+</html> 

@@ -1,7 +1,7 @@
 <html>
 <head>
-
-    <title>Í¶Ó°±ä»»</title>
+< meta  charset = â€œ utf-8 â€ >
+    <title>æŠ•å½±å˜æ¢</title>
 
     <style>
         .btn {
@@ -26,97 +26,97 @@
 
         <div style="margin-left:10px;margin-top:10px;font-size:13px;">
 
-            <strong>16170711&nbsp&nbsp&nbspÀîÑÅæÃ&nbsp&nbsp&nbspµØÍ¼Í¶Ó°</strong>
+            <strong>16170711&nbsp&nbsp&nbspæé›…å©·&nbsp&nbsp&nbspåœ°å›¾æŠ•å½±</strong>
 
         </div>
 
         <div style="font-family:Kaiti;font-size:15px;margin-top:5px;">
 
-            <a style="margin-left:10px;">Ìí¼ÓµØÍ¼ >></a>
+            <a style="margin-left:10px;">æ·»åŠ åœ°å›¾ >></a>
 
-            <a style="margin-left:10px;">Ñ¡ÔñÊäÈëÎÄ¼ş£º</a>
+            <a style="margin-left:10px;">é€‰æ‹©è¾“å…¥æ–‡ä»¶ï¼š</a>
 
             <input type="file" id="file" style="width: 200px;" />
 
 
 
-            <a style="margin-left: 7px;">Ñ¡ÔñµØÍ¼³ß¶È£º</a>
+            <a style="margin-left: 7px;">é€‰æ‹©åœ°å›¾å°ºåº¦ï¼š</a>
 
             <select style="height:25px;margin-right: 40px" id="t1" onchange="DropdownMenu()">
 
-                <option value="china">ÖĞ¹úµØÍ¼</option>
+                <option value="china">ä¸­å›½åœ°å›¾</option>
 
-                <option value="world">ÊÀ½çµØÍ¼</option>
+                <option value="world">ä¸–ç•Œåœ°å›¾</option>
 
             </select>
 
 
 
-            <a style="margin-left: 7px;">Ñ¡ÔñÍ¶Ó°ÀàĞÍ£º</a>
+            <a style="margin-left: 7px;">é€‰æ‹©æŠ•å½±ç±»å‹ï¼š</a>
 
             <select style="height:25px; margin-right: 30px;" id="t2">
 
-                <option value="geography">µØÀí×ø±êÏµ</option>
+                <option value="geography">åœ°ç†åæ ‡ç³»</option>
 
-                <option value="lambert">À¼²®ÌØÍ¶Ó°</option>
+                <option value="lambert">å…°ä¼¯ç‰¹æŠ•å½±</option>
 
-                <option value="mercator">Ä«¿¨ÍĞÍ¶Ó°</option>
+                <option value="mercator">å¢¨å¡æ‰˜æŠ•å½±</option>
 
             </select>
 
             &nbsp&nbsp&nbsp
 
-            <button class="btn" onclick="DrawMap()" style="margin-left:-30px;">ÏÔÊ¾</button>
+            <button class="btn" onclick="DrawMap()" style="margin-left:-30px;">æ˜¾ç¤º</button>
 
-            <button class="btn" onclick="ClearCanvas();">Çå¿Õ</button>
+            <button class="btn" onclick="ClearCanvas();">æ¸…ç©º</button>
 
         </div>
 
         <div style="font-family:Kaiti;font-size:15px;margin-top:5px;">
 
-            <a style="margin-left:10px;">´óÔ²º½Ïß >></a>
+            <a style="margin-left:10px;">å¤§åœ†èˆªçº¿ >></a>
 
-            <a style="margin-left:10px;">±±¾©¾­Î³¶È:</a>
+            <a style="margin-left:10px;">åŒ—äº¬ç»çº¬åº¦:</a>
 
-            <a>¾­¶È</a>
+            <a>ç»åº¦</a>
 
             <input id="x1" style="width:60px;" value="116.4" />
 
-            <a style="margin-left:-7px;">¡ãE</a>
+            <a style="margin-left:-7px;">Â°E</a>
 
             &nbsp
 
-            <a style="margin-left: 5px;">Î³¶È</a>
+            <a style="margin-left: 5px;">çº¬åº¦</a>
 
             <input id="y1" style="width:60px;" value="39.8" />
 
-            <a style="margin-left:-7px;">¡ãN</a>
+            <a style="margin-left:-7px;">Â°N</a>
 
             &nbsp&nbsp&nbsp
 
-            <a>°ÍÀè¾­Î³¶È:</a>
+            <a>å·´é»ç»çº¬åº¦:</a>
 
-            <a>¾­¶È</a>
+            <a>ç»åº¦</a>
 
             <input id="x2" style="width:60px;" value="2.2" />
 
-            <a style="margin-left:-7px;">¡ãE</a>
+            <a style="margin-left:-7px;">Â°E</a>
 
             &nbsp
 
-            <a style="margin-left: 8px;">Î³¶È</a>
+            <a style="margin-left: 8px;">çº¬åº¦</a>
 
             <input id="y2" style="width:60px;" value="48.52" />
 
-            <a style="margin-left:-7px;">¡ãN</a>
+            <a style="margin-left:-7px;">Â°N</a>
 
-            <button class="btn" onclick="DrawGreatCircle()" style="margin-top: 2px;margin-left:47px;">»æÖÆ</button>
+            <button class="btn" onclick="DrawGreatCircle()" style="margin-top: 2px;margin-left:47px;">ç»˜åˆ¶</button>
 
 
 
             &nbsp
 
-            <button class="btn" onclick="DrawMap()" style="margin-top: 2px;margin-left:5px;">Çå³ı</button>
+            <button class="btn" onclick="DrawMap()" style="margin-top: 2px;margin-left:5px;">æ¸…é™¤</button>
 
         </div>
 
@@ -130,40 +130,40 @@
         canvas.width = 1250;
         canvas.height = 570;
         var e2, e02, a, b;
-        //Çå¿Õ»­²¼
+        //æ¸…ç©ºç”»å¸ƒ
         function ClearCanvas() {
             ctext.clearRect(0, 0, canvas.width, canvas.height);
         }
-        //ÏÂÀ­¿òµÄÉèÖÃ
+        //ä¸‹æ‹‰æ¡†çš„è®¾ç½®
         function DropdownMenu() {
             var s1 = document.getElementById('t1');
             var s2 = document.getElementById('t2');
             if (s1.value == "world") {
                 s2.length = 0;
-                s2.add(new Option("µØÀí×ø±êÏµ", "geography"));
-                s2.add(new Option("Ä«¿¨ÍĞÍ¶Ó°", "mercator"));
+                s2.add(new Option("åœ°ç†åæ ‡ç³»", "geography"));
+                s2.add(new Option("å¢¨å¡æ‰˜æŠ•å½±", "mercator"));
             }
             else {
                 s2.length = 0;
-                s2.add(new Option("µØÀí×ø±êÏµ", "geography"));
-                s2.add(new Option("À¼²®ÌØÍ¶Ó°", "lambert"));
-                s2.add(new Option("Ä«¿¨ÍĞÍ¶Ó°", "mercator"));
+                s2.add(new Option("åœ°ç†åæ ‡ç³»", "geography"));
+                s2.add(new Option("å…°ä¼¯ç‰¹æŠ•å½±", "lambert"));
+                s2.add(new Option("å¢¨å¡æ‰˜æŠ•å½±", "mercator"));
             }
         }
         function DrawMap() {
             var t1 = document.getElementById('t1').value;
             var t2 = document.getElementById('t2').value;
             if (t1 == "china") {
-                e2 = 0.006693421622966;//¿ËÀ­Ë÷·òË¹»ùÍÖÇòÌåµÄµÚÒ»Æ«ĞÄÂÊ
-                e02 = 0.006738525414683;//¿ËÀ­Ë÷·òË¹»ùÍÖÇòÌåµÄµÚ¶şÆ«ĞÄÂÊ
-                a = 6378245;//¿ËÀ­Ë÷·òË¹»ùÍÖÇòÌåµÄ³¤°ë¾¶
-                b = 6356863.0187730473;//¿ËÀ­Ë÷·òË¹»ùÍÖÇòÌåµÄ¶Ì°ë¾¶
+                e2 = 0.006693421622966;//å…‹æ‹‰ç´¢å¤«æ–¯åŸºæ¤­çƒä½“çš„ç¬¬ä¸€åå¿ƒç‡
+                e02 = 0.006738525414683;//å…‹æ‹‰ç´¢å¤«æ–¯åŸºæ¤­çƒä½“çš„ç¬¬äºŒåå¿ƒç‡
+                a = 6378245;//å…‹æ‹‰ç´¢å¤«æ–¯åŸºæ¤­çƒä½“çš„é•¿åŠå¾„
+                b = 6356863.0187730473;//å…‹æ‹‰ç´¢å¤«æ–¯åŸºæ¤­çƒä½“çš„çŸ­åŠå¾„
             }
             else if (t1 = "world") {
-                e2 = 0.00669437999013;//wgs84»ùÍÖÇòÌåµÄµÚÒ»Æ«ĞÄÂÊ
-                e02 = 0.006739496742227;//wgs84»ùÍÖÇòÌåµÄµÚ¶şÆªĞÄÂÊ
-                a = 6378137; //wgs84»ùÍÖÇòÌåµÄ³¤°ë¾¶
-                b = 6356752.3142;//wgs84»ùÍÖÇòÌåµÄ¶Ì°ë¾¶
+                e2 = 0.00669437999013;//wgs84åŸºæ¤­çƒä½“çš„ç¬¬ä¸€åå¿ƒç‡
+                e02 = 0.006739496742227;//wgs84åŸºæ¤­çƒä½“çš„ç¬¬äºŒç¯‡å¿ƒç‡
+                a = 6378137; //wgs84åŸºæ¤­çƒä½“çš„é•¿åŠå¾„
+                b = 6356752.3142;//wgs84åŸºæ¤­çƒä½“çš„çŸ­åŠå¾„
             }
             var file = document.getElementById('file').files[0];
             var reader = new FileReader();
@@ -176,7 +176,7 @@
                 GetMap(t1, t2, data);
             }
         }
-        //¼ì²éxÊÇ·ñÊÇÎŞÇî´ó£¬Èç¹ûÊÇÔò±äÎª10000
+        //æ£€æŸ¥xæ˜¯å¦æ˜¯æ— ç©·å¤§ï¼Œå¦‚æœæ˜¯åˆ™å˜ä¸º10000
         function CheckX(x) {
             if (isFinite(x)) {
                 return x;
@@ -185,11 +185,11 @@
                 return 10000;
             }
         }
-        //»æÖÆÍø¸ñ
+        //ç»˜åˆ¶ç½‘æ ¼
         function DrawGird(t1, t2) {
             ctext.strokeStyle = "grey";
             ctext.lineWidth = 0.5;
-            //»æÖÆÎ³Ïß
+            //ç»˜åˆ¶çº¬çº¿
             for (var i = -18; i <= 18; i++) {
                 for (var j = -36; j < 36; j++) {
                     var x = j * 5;
@@ -202,7 +202,7 @@
                     ctext.stroke();
                 }
             }
-            //»æÖÆ¾­Ïß
+            //ç»˜åˆ¶ç»çº¿
             for (var i = -36; i <= 36; i++) {
                 for (var j = -18; j < 18; j++) {
                     var x = i * 5;
@@ -284,10 +284,10 @@
         function LambertXY(L, B) {
             L = L * Math.PI / 180;
             B = B * Math.PI / 180;
-            var b1 = 20 * Math.PI / 180; //À¼²®ÌØÍ¶Ó°µÄ±ê×¼Î³Ïß1
-            var b2 = 40 * Math.PI / 180; //À¼²®ÌØÍ¶Ó°µÄ±ê×¼Î³Ïß2
-            var l0 = 105 * Math.PI / 180;  //Ô­µã¾­¶È
-            var b0 = 0;  //Ô­µãÎ³¶È
+            var b1 = 20 * Math.PI / 180; //å…°ä¼¯ç‰¹æŠ•å½±çš„æ ‡å‡†çº¬çº¿1
+            var b2 = 40 * Math.PI / 180; //å…°ä¼¯ç‰¹æŠ•å½±çš„æ ‡å‡†çº¬çº¿2
+            var l0 = 105 * Math.PI / 180;  //åŸç‚¹ç»åº¦
+            var b0 = 0;  //åŸç‚¹çº¬åº¦
             var m = Math.cos(B) / Math.sqrt(1 - e2 * Math.sin(B) * Math.sin(B));
             var mb1 = Math.cos(b1) / Math.sqrt(1 - e2 * Math.sin(b1) * Math.sin(b1));
             var mb2 = Math.cos(b2) / Math.sqrt(1 - e2 * Math.sin(b2) * Math.sin(b2));
@@ -299,7 +299,7 @@
             var n = Math.log(mb1 / mb2) / Math.log(tb1 / tb2);
             var F = mb1 / (n * Math.pow(tb1, n));
             var r = a * F * Math.pow(t, n);
-            //¼ÆËãr0£¬ĞèÒª¼ÆËãt0
+            //è®¡ç®—r0ï¼Œéœ€è¦è®¡ç®—t0
             var t0 = Math.tan(Math.PI / 4 - b0 / 2) / Math.pow((1 - e * Math.sin(b0)) / (1 + e * Math.sin(b0)), e / 2);
             var r0 = a * F * Math.pow(t0, n);
             var theta = n * (L - l0);
@@ -310,7 +310,7 @@
         function SortPoint(a, b) {
             return b[0] - a[0];
         }
-        //»æÖÆ´óÔ²º½Ïß
+        //ç»˜åˆ¶å¤§åœ†èˆªçº¿
         function DrawGreatCircle() {
             ctext.strokeStyle = "red";
             var t1 = document.getElementById('t1').value;
@@ -340,7 +340,7 @@
             }
             ctext.stroke();
         }
-        //¼ÆËã´óÔ²º½ÏßÉÏµÄµã×ø±ê
+        //è®¡ç®—å¤§åœ†èˆªçº¿ä¸Šçš„ç‚¹åæ ‡
         function DrawGreatCircleXY(long1, lat1, long2, lat2) {
             lat1 = lat1 * Math.PI / 180;
             lat2 = lat2 * Math.PI / 180;
